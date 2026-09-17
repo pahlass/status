@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <title>Bitácora — Pahlass</title>
+  <link>https://status.pahlass.com/</link>
+  <description>Estado, novedades, avances y avisos de Pahlass.</description>
+  <item>
+    <title>Esta página nace</title>
+    <link>https://status.pahlass.com/#001</link>
+    <guid isPermaLink="false">001</guid>
+    <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[Estado y novedades de Pahlass, en una página aparte de la plataforma, para que siga funcionando aunque Newton no responda.]]></description>
+  </item>
+</channel></rss>

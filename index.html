@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estado y novedades — Pahlass</title>
+<meta name="description" content="Estado de los servicios de Pahlass, novedades, avances, avisos y prensa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* Una superficie. Hairlines de 1px. Cero radios.
+   Color solo como señal de estado. */
+:root{
+  --bg:#0D0E10; --bg2:#141619; --tx:#EFEFEF; --tx2:#A8ACB2; --tx3:#6E737A;
+  --ln:#1F2226; --ln2:#2E3238;
+  --ok:#5E9268; --rie:#AD8A45; --mal:#A35A5A; --az:#5F7CA3;
+  --ui:'Inter Tight',system-ui,-apple-system,sans-serif;
+  --mo:'JetBrains Mono',ui-monospace,monospace;
+  --w:1120px;
+}
+html[data-theme="light"]{
+  --bg:#FFFFFF; --bg2:#FAFAFA; --tx:#16181B; --tx2:#54585E; --tx3:#8B9098;
+  --ln:#E8EAEC; --ln2:#D3D6DA;
+  --ok:#3F7A4C; --rie:#8A6A26; --mal:#8F4242; --az:#3F5F8C;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--ui);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0;
+  font-size:inherit;text-align:left;border-radius:0}
+svg{display:block}
+.w{max-width:var(--w);margin:0 auto;padding:0 24px}
+.l{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
+.mn{font-family:var(--mo);letter-spacing:.02em}
+
+/* cabecera */
+.hd{border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px)}
+.hd-in{max-width:var(--w);margin:0 auto;padding:0 24px;height:56px;display:flex;
+  align-items:center;gap:24px}
+.mk{display:flex;align-items:center;gap:9px;color:var(--tx);flex:none}
+.mk b{font-size:15px;font-weight:500;letter-spacing:-.01em}
+.mk i{font-style:normal;font:10px/1.6 var(--ui);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--tx3)}
+.hd .sp{flex:1}
+.hd-e{display:flex;align-items:center;gap:8px;flex:none}
+.hd-e b{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;font-weight:400}
+.hd-e i{width:7px;height:7px;display:block}
+.hd-e.ok{color:var(--ok)} .hd-e.ok i{background:var(--ok)}
+.hd-e.rie{color:var(--rie)} .hd-e.rie i{background:var(--rie)}
+.hd-e.mal{color:var(--mal)} .hd-e.mal i{background:var(--mal)}
+.hd-e.az{color:var(--az)} .hd-e.az i{background:var(--az)}
+.ib{width:28px;height:28px;display:grid;place-items:center;color:var(--tx3);flex:none}
+.ib:hover{color:var(--tx)}
+.bt{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:8px 13px;
+  border:1px solid var(--ln2);color:var(--tx2);transition:.14s;flex:none;display:inline-block}
+.bt:hover{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.bt.ll{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.bt.ll:hover{background:transparent;color:var(--tx);border-color:var(--ln2)}
+@media (max-width:720px){ .hd-in{gap:12px} .mk i,.hd-e b{display:none} }
+
+/* dos columnas */
+.gr{display:grid;grid-template-columns:minmax(0,1fr) 296px;gap:0}
+.gl{padding:34px 40px 60px 0;min-width:0}
+.gd{border-left:1px solid var(--ln);padding:34px 0 60px 30px;min-width:0}
+.gd-in{position:sticky;top:82px}
+@media (max-width:900px){
+  .gr{grid-template-columns:1fr}
+  .gl{padding:26px 0 30px;order:2}
+  .gd{border-left:0;border-bottom:1px solid var(--ln);padding:26px 0 30px;order:1}
+  .gd-in{position:static}
+}
+
+/* ── panel de estado (derecha) ── */
+.pe{padding-bottom:24px;border-bottom:1px solid var(--ln);margin-bottom:22px}
+.pe-t{display:flex;align-items:flex-start;gap:11px}
+.pe-s{width:9px;height:9px;flex:none;margin-top:7px}
+.pe-s.ok{background:var(--ok)} .pe-s.rie{background:var(--rie)}
+.pe-s.mal{background:var(--mal)} .pe-s.az{background:var(--az)}
+.pe-t h2{font-size:17px;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1.3}
+.pe-m{display:flex;gap:22px;margin-top:14px;padding-left:20px}
+.pe-m b{display:block;font-family:var(--mo);font-size:14px;font-weight:400}
+.pe-m span{display:block;margin-top:4px}
+@media (max-width:900px){ .pe-m{padding-left:0} }
+
+.cm{padding:11px 0;border-bottom:1px solid var(--ln)}
+.cm:last-of-type{border-bottom:0}
+.cm-h{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.cm-n{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-e{width:7px;height:7px;flex:none}
+.cm-e.ok{background:var(--ok);opacity:.6} .cm-e.rie{background:var(--rie)}
+.cm-e.mal{background:var(--mal)} .cm-e.az{background:var(--az)}
+.d90{display:flex;gap:1px;height:14px}
+.d90 i{flex:1;min-width:1px;position:relative;background:var(--tx);opacity:.13;transition:.1s}
+.d90 i.rie{background:var(--rie);opacity:1}
+.d90 i.mal{background:var(--mal);opacity:1}
+.d90 i.az{background:var(--az);opacity:1}
+.d90 i:hover{opacity:1;z-index:4}
+.d90 i:hover::after{content:attr(data-t);position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);white-space:nowrap;padding:5px 8px;font:11px/1.4 var(--mo);
+  background:var(--tx);color:var(--bg);z-index:9;pointer-events:none}
+.pe-b{display:flex;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--ln)}
+.pe-b .bt{flex:1;text-align:center}
+.pe-n{margin-top:18px;padding-top:16px;border-top:1px solid var(--ln)}
+.pe-n p{font-size:12.5px;line-height:1.6;color:var(--tx3);margin:8px 0 0}
+
+/* ── bitácora (izquierda) ── */
+.ft{display:flex;gap:18px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--ln);
+  margin-bottom:4px}
+.ft button{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);
+  padding-bottom:5px;border-bottom:1px solid transparent;transition:.14s}
+.ft button:hover{color:var(--tx)}
+.ft button[aria-current="true"]{color:var(--tx);border-bottom-color:var(--tx)}
+
+.en{padding:26px 0;border-bottom:1px solid var(--ln)}
+.en-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.en-k{display:inline-flex;align-items:center;gap:7px}
+.en-k i{width:6px;height:6px;display:block;background:var(--tx3)}
+.en-k.ok i{background:var(--ok)} .en-k.rie i{background:var(--rie)}
+.en-k.mal i{background:var(--mal)} .en-k.az i{background:var(--az)}
+.en h3{font-size:19px;font-weight:500;letter-spacing:-.02em;margin:0 0 8px;line-height:1.3}
+.en .rs{font-size:15px;line-height:1.6;color:var(--tx2);margin:0}
+.en-x{margin-top:16px}
+.en-x p{font-size:14.8px;line-height:1.68;color:var(--tx2);margin:0 0 12px}
+.en-x ul{margin:0 0 12px;padding-left:18px}
+.en-x li{font-size:14.8px;line-height:1.68;color:var(--tx2);margin-bottom:5px}
+.en-x blockquote{margin:0 0 12px;padding-left:16px;border-left:1px solid var(--ln2);
+  font-size:14.8px;line-height:1.68;color:var(--tx2)}
+.en-p{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
+.en-p .sp{flex:1}
+.en-p button{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
+.en-p button:hover{color:var(--tx)}
+
+/* actualizaciones de incidente dentro de la entrada */
+.up{padding:14px 0;border-top:1px solid var(--ln);display:grid;
+  grid-template-columns:108px minmax(0,1fr);gap:18px}
+.up-f{font:10px/1.7 var(--ui);letter-spacing:.06em;text-transform:uppercase}
+.up-f.ok{color:var(--ok)} .up-f.rie{color:var(--rie)}
+.up-f.az{color:var(--az)} .up-f.mal{color:var(--mal)}
+.up-f time{display:block;font-family:var(--mo);font-size:11px;letter-spacing:.02em;
+  text-transform:none;color:var(--tx3);margin-top:4px}
+.up p{font-size:14.8px;line-height:1.6;color:var(--tx2);margin:0}
+@media (max-width:620px){ .up{grid-template-columns:1fr;gap:6px} }
+
+.vc{padding:26px 0;color:var(--tx3);font-size:14.5px}
+.ms{padding:26px 0 10px;border-bottom:1px solid var(--ln2)}
+
+/* pie */
+.pi{border-top:1px solid var(--ln);padding:26px 0 40px}
+.pi-in{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+.pi-in .sp{flex:1}
+.pi button{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
+.pi button:hover{color:var(--tx)}
+.pi p{font-size:13px;line-height:1.6;color:var(--tx3);margin:16px 0 0;max-width:62ch}
+
+/* panel lateral */
+.sr[hidden]{display:none!important}
+.sr{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.7);display:flex;justify-content:flex-end}
+.pn{width:min(440px,100%);height:100%;background:var(--bg);border-left:1px solid var(--ln2);
+  overflow-y:auto;padding:32px 26px;animation:sl .24s cubic-bezier(.3,.8,.3,1)}
+@keyframes sl{from{transform:translateX(20px);opacity:.6}to{transform:none;opacity:1}}
+.pn-h{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:28px}
+.pn-h h2{font-size:20px;font-weight:500;letter-spacing:-.02em;margin:10px 0 0}
+.pn-h p{font-size:14.5px;color:var(--tx3);margin:8px 0 0}
+.cp{margin-bottom:20px}
+.cp span{display:block;margin-bottom:7px}
+.cp input{width:100%;padding:2px 2px 9px;border:0;border-bottom:1px solid var(--ln2);
+  background:transparent;color:var(--tx);font-size:16px;outline:none;font-family:var(--ui)}
+.cp input:focus{border-bottom-color:var(--tx)}
+.ck{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0 22px}
+.ck label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--tx2);cursor:pointer}
+@media (max-width:500px){ .ck{grid-template-columns:1fr} }
+.kv{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.kv span{font-family:var(--mo);font-size:12.5px;color:var(--tx2);word-break:break-all}
+</style>
+</head>
+<body>
+
+<div class="hd"><div class="hd-in">
+  <button class="mk" data-top>
+    <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+      <path d="M6 4h11a9 9 0 0 1 0 18h-4v6H6V4z" fill="currentColor"/>
+      <circle cx="15" cy="13" r="4.6" fill="var(--bg)"/>
+    </svg><b>Pahlass</b><i>Bitácora</i>
+  </button>
+  <span class="sp"></span>
+  <span class="hd-e" id="hdE"></span>
+  <button class="ib" id="tema" aria-label="Cambiar tema">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7Z"/></svg>
+  </button>
+  <button class="bt" data-sus>Avisos</button>
+</div></div>
+
+<div class="w"><div class="gr">
+  <main class="gl" id="feed"><div class="vc">Cargando…</div></main>
+  <aside class="gd"><div class="gd-in" id="lado"></div></aside>
+</div></div>
+
+<footer class="pi"><div class="w">
+  <div class="pi-in">
+    <button data-f="todo">Bitácora</button>
+    <button data-f="estado">Estado</button>
+    <button data-rss>Canales</button>
+    <button data-sop>Soporte</button>
+    <span class="sp"></span>
+    <span class="l" id="anio"></span>
+  </div>
+  <p>Esta página está alojada fuera de la infraestructura de Pahlass (GitHub Pages, no Railway/Supabase).
+    Sigue funcionando aunque la plataforma no responda.</p>
+</div></footer>
+
+<div class="sr" id="sr" hidden></div>
+
+<script>
+/* ════════ CARGA DE DATOS REALES ════════
+   componentes.json: estado ACTUAL de cada componente (lo edita el panel /admin).
+   entradas.json: bitácora completa (estado/novedad/avance/aviso/prensa).
+   El historial de 90 días de cada componente NO se inventa ni se mide con un
+   heartbeat automático (todavía) — se calcula a partir de los incidentes
+   ("estado") ya publicados en la bitácora: si un incidente cubre ese
+   componente y esa fecha, ese día se pinta con la severidad del incidente.
+   Ver "Cómo se mide" en el panel lateral. */
+const HOY = new Date();
+const EST={op:{n:'Operativo',c:'ok'},deg:{n:'Degradado',c:'rie'},
+  par:{n:'Interrupción parcial',c:'rie'},caido:{n:'Interrumpido',c:'mal'},
+  mant:{n:'En mantenimiento',c:'az'}};
+const FASE={investigando:{n:'Investigando',c:'rie'},identificado:{n:'Identificado',c:'rie'},
+  monitoreando:{n:'Monitoreando',c:'az'},resuelto:{n:'Resuelto',c:'ok'}};
+const TIPO={
+  estado:  {n:'Estado',   c:'rie'},
+  novedad: {n:'Novedad',  c:'ok'},
+  avance:  {n:'Avance',   c:'az'},
+  aviso:   {n:'Aviso',    c:'rie'},
+  prensa:  {n:'Prensa',   c:''},
+};
+const RANGO_SEV=['caido','par','deg','mant'];
+
+let COMP=[], E=[], H={};
+
+function peorSeveridad(sevs){ for(const s of RANGO_SEV) if(sevs.includes(s)) return s; return null; }
+
+function calcularHistorial(compKey, incidentes){
+  const DIAS=90, hoy0=new Date(HOY); hoy0.setHours(0,0,0,0);
+  const out=[];
+  for(let idx=0; idx<DIAS; idx++){
+    const d=DIAS-1-idx;
+    const inicioDia=new Date(hoy0); inicioDia.setDate(inicioDia.getDate()-d);
+    const finDia=new Date(inicioDia); finDia.setDate(finDia.getDate()+1);
+    let min=0, sevs=[];
+    for(const inc of incidentes){
+      if(!inc.comp.includes(compKey)) continue;
+      const ini=inc.f, fin=inc.fin||HOY;
+      const ini2=ini>inicioDia?ini:inicioDia, fin2=fin<finDia?fin:finDia;
+      const ms=fin2-ini2;
+      if(ms>0){ min+=Math.round(ms/60000); sevs.push(inc.sev); }
+    }
+    const peor=peorSeveridad(sevs);
+    out.push(peor?{e:peor,min}:{e:'op',min:0});
+  }
+  return out;
+}
+
+const disp=k=>{const h=H[k];
+  const c=h.reduce((a,d)=>a+(d.e==='op'||d.e==='mant'?0:d.min),0);
+  return (100-c/(h.length*1440)*100).toFixed(2);};
+const dispG=()=>COMP.length?(COMP.reduce((a,c)=>a+ +disp(c.k),0)/COMP.length).toFixed(2):'100.00';
+
+/* ════════ UTILIDADES ════════ */
+const el=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const ML=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const hm=f=>String(f.getHours()).padStart(2,'0')+':'+String(f.getMinutes()).padStart(2,'0');
+const fc=f=>`${String(f.getDate()).padStart(2,'0')} ${MS[f.getMonth()]} ${f.getFullYear()} · ${hm(f)}`;
+const fd=f=>`${String(f.getDate()).padStart(2,'0')} ${MS[f.getMonth()]} ${f.getFullYear()}`;
+const nc=k=>(COMP.find(c=>c.k===k)||{n:k}).n;
+function hace(f){const m=Math.round((HOY-f)/60000);
+  if(m<1) return 'justo ahora';
+  if(m<60) return `hace ${m} min`;
+  if(m<1440) return `hace ${Math.round(m/60)} h`;
+  const d=Math.round(m/1440); return d===1?'hace 1 día':`hace ${d} días`;}
+function dur(a,b){const m=Math.round((b-a)/60000);
+  return m<60?`${m} min`:`${Math.floor(m/60)} h ${m%60} min`;}
+function gl(){
+  if(COMP.some(c=>c.e==='caido')) return {c:'mal',t:'Interrupción del servicio'};
+  if(COMP.some(c=>c.e==='par'))   return {c:'mal',t:'Interrupción parcial'};
+  if(COMP.some(c=>c.e==='deg'))   return {c:'rie',t:'Un componente degradado'};
+  if(COMP.some(c=>c.e==='mant'))  return {c:'az', t:'Mantenimiento en curso'};
+  return {c:'ok',t:'Todos los sistemas operando'};
+}
+function cuerpo(t){let o='',b=[];
+  const v=()=>{if(b.length){o+=`<ul>${b.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;b=[];}};
+  (t||'').split('\n').forEach(li=>{const s=li.trim();
+    if(!s){v();return;}
+    if(s.startsWith('·')) b.push(s.replace(/^·\s*/,''));
+    else if(s.startsWith('"')) {v(); o+=`<blockquote>${esc(s)}</blockquote>`;}
+    else {v(); o+=`<p>${esc(s)}</p>`;}});
+  v(); return o;}
+
+let filtro='todo', ex=null;
+const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
+  ['avance','Avances'],['aviso','Avisos'],['prensa','Prensa']];
+
+/* ════════ LADO DERECHO ════════ */
+function pintaLado(){
+  const g=gl(), act=E.filter(e=>e.t==='estado'&&e.abierto);
+  el('lado').innerHTML=`
+  <div class="pe">
+    <div class="pe-t"><span class="pe-s ${g.c}"></span><h2>${g.t}</h2></div>
+    <div class="pe-m">
+      <div><b>${dispG()}%</b><span class="l">90 días</span></div>
+      <div><b>${COMP.filter(c=>c.e==='op').length}/${COMP.length}</b><span class="l">Operativos</span></div>
+      <div><b>${act.length}</b><span class="l">Abiertos</span></div>
+    </div>
+  </div>
+  <div class="l" style="margin-bottom:12px">Componentes · 90 días</div>
+  ${COMP.map(c=>`<div class="cm">
+    <div class="cm-h"><span class="cm-n">${esc(c.n)}</span>
+      <span class="cm-e ${EST[c.e].c}" title="${EST[c.e].n}"></span></div>
+    <div class="d90">${(H[c.k]||[]).map((d,i)=>{const n=89-i;
+      const t=d.e==='op'?'sin incidencias':`${EST[d.e].n.toLowerCase()} · ${d.min} min`;
+      return `<i class="${EST[d.e].c==='ok'?'':EST[d.e].c}" data-t="${n===0?'hoy':`hace ${n} d`} — ${t}"></i>`;
+    }).join('')}</div>
+  </div>`).join('')}
+  <div class="pe-b">
+    <button class="bt ll" data-sus>Avisos</button>
+    <button class="bt" data-rss>Canales</button>
+  </div>
+  <div class="pe-n">
+    <span class="l">Cómo se mide</span>
+    <p>El estado actual de cada componente se actualiza a mano cuando cambia. El historial de 90 días
+      se calcula a partir de los incidentes ya publicados en esta bitácora, no con un monitoreo automático
+      todavía.</p>
+  </div>`;
+  el('hdE').className=`hd-e ${g.c}`;
+  el('hdE').innerHTML=`<i></i><b>${g.t}</b>`;
+}
+
+/* ════════ LADO IZQUIERDO ════════ */
+function entrada(e){
+  const T=TIPO[e.t], a=ex===e.id;
+  const esInc=e.t==='estado';
+  return `<article class="en">
+    <div class="en-h">
+      <span class="en-k l ${T.c}"><i></i>${T.n}</span>
+      <span class="l mn">${fd(e.f)}</span>
+      ${esInc?`<span class="l">${e.abierto?FASE[e.upd[0].e].n:`Resuelto · ${dur(e.f,e.fin)}`}</span>`:''}
+      <span class="l" style="opacity:.5">${esc(e.id)}</span>
+    </div>
+    <h3>${esc(e.ti)}</h3>
+    <p class="rs">${esc(e.rs)}</p>
+    ${a?(esInc
+      ? e.upd.map(u=>`<div class="up">
+          <div class="up-f ${FASE[u.e].c}">${FASE[u.e].n}<time>${fc(u.h)}</time></div>
+          <p>${esc(u.x)}</p></div>`).join('')
+      : `<div class="en-x">${cuerpo(e.x)}</div>`):''}
+    <div class="en-p">
+      ${e.comp.length?`<span class="l">Afecta a ${e.comp.map(nc).join(', ')}</span>`:''}
+      <span class="sp"></span>
+      <span class="l" style="opacity:.5">${hace(e.f)}</span>
+      <button data-e="${esc(e.id)}">${a?'Ocultar':esInc?'Actualizaciones':'Leer más'}</button>
+    </div>
+  </article>`;
+}
+function pintaFeed(){
+  const l=E.filter(e=>filtro==='todo'||e.t===filtro);
+  const meses={};
+  l.forEach(e=>{const k=`${ML[e.f.getMonth()]} de ${e.f.getFullYear()}`;
+    (meses[k]=meses[k]||[]).push(e);});
+  el('feed').innerHTML=`
+    <div class="ft">
+      ${FILTROS.map(([k,n])=>{const c=k==='todo'?E.length:E.filter(e=>e.t===k).length;
+        return c?`<button data-f="${k}" aria-current="${filtro===k}">${n} · ${c}</button>`:'';}).join('')}
+    </div>
+    ${l.length? Object.entries(meses).map(([m,es],i)=>
+      `<div class="ms l"${i===0?' style="border-bottom:0;padding-top:20px"':''}>${m}</div>`
+      +es.map(entrada).join('')).join('')
+      :`<div class="vc">Sin entradas de ese tipo.</div>`}`;
+}
+function pinta(){ pintaLado(); pintaFeed(); }
+
+/* ════════ INTERACCIÓN ════════ */
+const X=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+const abre=h=>{const s=el('sr'); s.hidden=false; s.innerHTML=`<div class="pn">${h}</div>`;
+  document.body.style.overflow='hidden';};
+const cierra=()=>{el('sr').hidden=true; document.body.style.overflow='';};
+
+document.addEventListener('click',ev=>{
+  const t=ev.target;
+  if(t.closest('[data-cerrar]')||t.id==='sr') return cierra();
+  if(t.closest('#sok')){
+    const correo=(el('sc')||{}).value||'';
+    const wa=(el('st')||{}).value||'';
+    const marcados=[...document.querySelectorAll('.ck input:checked')]
+      .map((_,i)=>i); // solo para el resumen visual, el envío real es por correo
+    const asunto=encodeURIComponent('Alta en avisos de estado — Pahlass');
+    const cuerpoMail=encodeURIComponent(`Quiero recibir avisos de estado de Pahlass.\n\nCorreo: ${correo}\nWhatsApp: ${wa||'(no proporcionado)'}`);
+    window.location.href=`mailto:hola@pahlass.com?subject=${asunto}&body=${cuerpoMail}`;
+    el('sf').innerHTML=`<p style="font-size:15px;color:var(--tx2);margin:0">Se abrió tu correo con la solicitud lista para enviar${correo?` a nombre de <b style="color:var(--tx);font-weight:400">${esc(correo)}</b>`:''}. Mándala y quedas dado de alta.</p>
+      <button class="bt" data-cerrar style="margin-top:22px">Cerrar</button>`;
+    return;
+  }
+  if(t.closest('[data-sus]')) return abre(`
+    <div class="pn-h"><div><span class="l">Avisos</span>
+      <h2>Te escribimos cuando algo falla.</h2>
+      <p>Y cuando se resuelve. Nada comercial.</p></div>
+      <button class="ib" data-cerrar>${X}</button></div>
+    <div id="sf">
+      <div class="cp"><span class="l">Correo</span><input id="sc" type="email"></div>
+      <div class="cp"><span class="l">WhatsApp (opcional)</span><input id="st" type="text"></div>
+      <span class="l">Componentes</span>
+      <div class="ck">${COMP.map(c=>`<label><input type="checkbox" checked><span>${esc(c.n)}</span></label>`).join('')}</div>
+      <button class="bt ll" id="sok" style="width:100%;text-align:center;padding:11px">Suscribirme</button>
+    </div>`);
+  if(t.closest('[data-rss]')) return abre(`
+    <div class="pn-h"><div><span class="l">Canales</span>
+      <h2>Para consultarlo desde otra herramienta.</h2></div>
+      <button class="ib" data-cerrar>${X}</button></div>
+    <div class="kv"><span class="l">Bitácora</span><span>status.pahlass.com/bitacora.xml</span></div>
+    <div class="kv"><span class="l">Incidentes</span><span>status.pahlass.com/incidentes.xml</span></div>
+    <div class="kv"><span class="l">Estado</span><span>status.pahlass.com/api/estado.json</span></div>
+    <button class="bt" data-cerrar style="margin-top:24px">Cerrar</button>`);
+  if(t.closest('[data-sop]')) return abre(`
+    <div class="pn-h"><div><span class="l">Soporte</span>
+      <h2>Reportar un problema.</h2></div>
+      <button class="ib" data-cerrar>${X}</button></div>
+    <p style="font-size:15px;line-height:1.6;color:var(--tx2);margin:0 0 20px">Si el problema apareció
+      dentro de la plataforma, en la pantalla de Registro hay un botón para copiar el reporte del error.
+      Ese bloque trae todo lo necesario.</p>
+    <div class="kv"><span class="l">Correo</span><span>hola@pahlass.com</span></div>
+    <div class="kv"><span class="l">WhatsApp</span><span>+52 667 712 4400</span></div>
+    <button class="bt" data-cerrar style="margin-top:24px">Cerrar</button>`);
+  const fb=t.closest('[data-f]'); if(fb){filtro=fb.dataset.f; ex=null;
+    try{window.scrollTo(0,0);}catch(_){} return pintaFeed();}
+  const eb=t.closest('[data-e]'); if(eb){ex=ex===eb.dataset.e?null:eb.dataset.e; return pintaFeed();}
+  if(t.closest('[data-top]')){ filtro='todo'; ex=null; try{window.scrollTo(0,0);}catch(_){}
+    return pinta(); }
+  if(t.closest('#tema')){
+    const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    try{localStorage.setItem('bt.t',n);}catch(_){}
+  }
+});
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!el('sr').hidden) cierra();});
+
+async function cargar(){
+  const [compRes, entRes] = await Promise.all([
+    fetch('data/componentes.json').then(r=>r.json()),
+    fetch('data/entradas.json').then(r=>r.json()),
+  ]);
+  COMP = compRes;
+  E = entRes.map(e=>({
+    ...e,
+    f: new Date(e.f),
+    fin: e.fin ? new Date(e.fin) : null,
+    comp: e.comp || [],
+    upd: (e.upd||[]).map(u=>({...u, h:new Date(u.h)})),
+  })).sort((a,b)=>b.f-a.f);
+  const incidentes = E.filter(e=>e.t==='estado');
+  COMP.forEach(c=>{ H[c.k]=calcularHistorial(c.k, incidentes); });
+}
+
+(function(){
+  let t='dark';
+  try{t=localStorage.getItem('bt.t')||'dark';}catch(_){}
+  document.documentElement.setAttribute('data-theme',t);
+  el('anio').textContent=`© ${HOY.getFullYear()} Pahlass`;
+  cargar().then(pinta).catch(()=>{ el('feed').innerHTML='<div class="vc">No se pudo cargar la bitácora. Intenta recargar la página.</div>'; });
+})();
+</script>
+</body>
+</html>

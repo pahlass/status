@@ -1,0 +1,10 @@
+[
+  { "k": "app",    "n": "Aplicación",          "e": "op" },
+  { "k": "exp",    "n": "Expedientes",         "e": "op" },
+  { "k": "agenda", "n": "Agenda y asistencia", "e": "op" },
+  { "k": "eval",   "n": "Evaluación",          "e": "op" },
+  { "k": "fin",    "n": "Finanzas",            "e": "op" },
+  { "k": "inv",    "n": "Inventario",          "e": "op" },
+  { "k": "auth",   "n": "Acceso y cuentas",    "e": "op" },
+  { "k": "export", "n": "Exportaciones",       "e": "op" }
+]
