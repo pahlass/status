@@ -1,8 +1,8 @@
 {
-  "actualizado": "2026-09-18T01:14:11.231Z",
+  "actualizado": "2026-09-18T01:15:33.921Z",
   "global": {
-    "estado": "pendiente",
-    "uptime90d": null,
+    "estado": "op",
+    "uptime90d": "99.984",
     "medidoPor": "UptimeRobot"
   },
   "incidentesAbiertos": []
