@@ -31,7 +31,7 @@ const resp = await fetch("https://api.uptimerobot.com/v2/getMonitors", {
     format: "json",
     custom_uptime_ratios: "1-7-30-90",
     response_times: 1,
-    response_times_limit: 1,
+    response_times_limit: 48, // últimos ~4h a 5 min por chequeo, para la mini-gráfica de respuesta
     logs: 1,
     log_types: "1", // solo eventos de caída (2=arriba, 98/99=pausa no nos sirven aquí)
     logs_start_date: INICIO_SEG,
@@ -104,6 +104,20 @@ for (let i = DIAS_HISTORIAL - 1; i >= 0; i--) {
 }
 writeFileSync(join(raiz, "data/historial.json"), JSON.stringify(historial, null, 2) + "\n");
 
+// Desde cuándo lleva operativo sin interrupciones — el fin del evento de
+// caída más reciente dentro de la ventana de logs pedida. Si no hay
+// ninguno, no se sabe con certeza (pudo caerse antes del rango que se
+// pidió), así que se deja null en vez de inventar una fecha.
+const ultimaCaidaFin = eventosCaida.length ? Math.max(...eventosCaida.map((e) => e.fin)) : null;
+
+// UptimeRobot devuelve response_times del más reciente al más viejo —
+// se invierte para que la mini-gráfica se dibuje en orden cronológico
+// (viejo a la izquierda, ahora a la derecha), como cualquier serie de
+// tiempo.
+const respuestas = (monitor.response_times ?? [])
+  .map((r) => ({ t: r.datetime, ms: r.value }))
+  .reverse();
+
 writeFileSync(
   join(raiz, "data/estado-global.json"),
   JSON.stringify(
@@ -113,6 +127,8 @@ writeFileSync(
       url: monitor.url,
       estado: ESTADO_POR_CODIGO[monitor.status] ?? "pendiente",
       tiempoRespuestaMs: monitor.response_times?.[0]?.value ?? null,
+      respuestas,
+      operativoDesde: ultimaCaidaFin ? new Date(ultimaCaidaFin).toISOString() : null,
       uptime: { dia: r1 ?? null, semana: r7 ?? null, mes: r30 ?? null, dias90: r90 ?? null },
       medidoPor: "UptimeRobot",
       intervaloMin: 5,

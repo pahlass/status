@@ -81,12 +81,25 @@ html[data-theme="light"] .mk img{filter:none}
 .pe-s{width:9px;height:9px;flex:none;margin-top:7px}
 .pe-s.ok{background:var(--ok)} .pe-s.rie{background:var(--rie)}
 .pe-s.mal{background:var(--mal)} .pe-s.az{background:var(--az)}
+.pe-s.ok{animation:latido 2.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){ .pe-s.ok{animation:none} }
+@keyframes latido{0%,100%{opacity:1}50%{opacity:.35}}
 .pe-t h2{font-size:17px;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1.3}
 .pe-m{display:flex;gap:22px;margin-top:14px;padding-left:20px}
 .pe-m b{display:block;font-family:var(--mo);font-size:14px;font-weight:400}
 .pe-m span{display:block;margin-top:4px}
 @media (max-width:900px){ .pe-m{padding-left:0} }
 
+.uw{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ln);margin:18px 0}
+.uw div{background:var(--bg);padding:11px 3px;text-align:center}
+.uw b{display:block;font-family:var(--mo);font-size:13px;font-weight:400}
+.uw span{display:block;margin-top:4px}
+.spark-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.spark-h b{font-family:var(--mo);font-size:13px;font-weight:400;color:var(--tx)}
+.spark svg{display:block;width:100%;height:42px;overflow:visible}
+.spark-l{display:flex;justify-content:space-between;margin-top:5px}
+.od{display:flex;align-items:baseline;justify-content:space-between;padding:11px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);margin:18px 0}
+.od b{font-family:var(--mo);font-size:13px;font-weight:400;color:var(--tx)}
 .hist-l{display:flex;justify-content:space-between;margin-bottom:6px}
 .hist{display:flex;gap:1.5px;height:36px}
 .hist i{flex:1;min-width:2px;position:relative;background:var(--ok);opacity:.22;transition:.1s}
@@ -240,6 +253,32 @@ function haceVivo(iso){
   const h=Math.floor(m/60), rm=m%60;
   return `hace ${h}h ${rm}m`;
 }
+// "Operativo desde hace Xd Xh Ym" — igual idea que "Currently up for..."
+// del propio UptimeRobot, también en vivo.
+function duracionDesde(iso){
+  const s=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/1000));
+  const d=Math.floor(s/86400), h=Math.floor((s%86400)/3600), m=Math.floor((s%3600)/60);
+  if(d>0) return `${d}d ${h}h`;
+  if(h>0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+const fmtPct=v=>v!=null&&v!==''?Number(v).toFixed(2):'—';
+function sparkline(respuestas){
+  if(!respuestas||respuestas.length<2) return '';
+  const vals=respuestas.map(r=>r.ms);
+  const min=Math.min(...vals), max=Math.max(...vals), rango=Math.max(max-min,1);
+  const W=300,H=40,PAD=3;
+  const pts=respuestas.map((r,i)=>{
+    const x=(i/(respuestas.length-1))*W;
+    const y=H-PAD-((r.ms-min)/rango)*(H-PAD*2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const [cx,cy]=pts[pts.length-1].split(',');
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <polyline points="${pts.join(' ')}" fill="none" stroke="var(--ok)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+    <circle cx="${cx}" cy="${cy}" r="2.4" fill="var(--ok)"/>
+  </svg>`;
+}
 
 /* ════════ UTILIDADES ════════ */
 const el=id=>document.getElementById(id);
@@ -259,10 +298,10 @@ function dur(a,b){const m=Math.round((b-a)/60000);
   return m<60?`${m} min`:`${Math.floor(m/60)} h ${m%60} min`;}
 function gl(){
   if(!GLOBAL || GLOBAL.estado==='pendiente') return {c:'az',t:'Verificando estado…'};
-  if(GLOBAL.estado==='caido') return {c:'mal',t:'Newton no responde'};
-  if(GLOBAL.estado==='deg')   return {c:'rie',t:'Newton con lentitud'};
+  if(GLOBAL.estado==='caido') return {c:'mal',t:'Pahlass no responde'};
+  if(GLOBAL.estado==='deg')   return {c:'rie',t:'Pahlass con lentitud'};
   if(GLOBAL.estado==='mant')  return {c:'az', t:'Mantenimiento en curso'};
-  return {c:'ok',t:'Newton está operativo'};
+  return {c:'ok',t:'Pahlass está operativo'};
 }
 function cuerpo(t){let o='',b=[];
   const v=()=>{if(b.length){o+=`<ul>${b.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;b=[];}};
@@ -281,21 +320,33 @@ const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
 function fechaCorta(iso){const d=new Date(iso+'T12:00:00');return `${d.getDate()} ${MS[d.getMonth()]}`;}
 function pintaLado(){
   const g=gl(), act=E.filter(e=>e.t==='estado'&&e.abierto);
-  const g90=GLOBAL?.uptime?.dias90, uptime90=g90!=null&&g90!==''?Number(g90).toFixed(2):'—';
   const tr=GLOBAL?.tiempoRespuestaMs!=null?`${GLOBAL.tiempoRespuestaMs} ms`:'—';
   const hist=HISTORIAL.map(d=>{
     const t=d.estado==='op'?`${fechaCorta(d.fecha)} — sin caídas`:`${fechaCorta(d.fecha)} — caído ${d.minutosCaido} min`;
     return `<i class="${d.estado==='op'?'':'caido'}" data-t="${esc(t)}"></i>`;
   }).join('');
+  const resp=GLOBAL?.respuestas;
   el('lado').innerHTML=`
   <div class="pe">
     <div class="pe-t"><span class="pe-s ${g.c}"></span><h2>${g.t}</h2></div>
     <div class="pe-m">
-      <div><b>${uptime90}%</b><span class="l">90 días</span></div>
       <div><b>${tr}</b><span class="l">Respuesta</span></div>
+      <div><b>${GLOBAL?.intervaloMin??5} min</b><span class="l">Intervalo</span></div>
       <div><b>${act.length}</b><span class="l">Abiertos</span></div>
     </div>
   </div>
+  <div class="uw">
+    <div><b>${fmtPct(GLOBAL?.uptime?.dia)}%</b><span class="l">Hoy</span></div>
+    <div><b>${fmtPct(GLOBAL?.uptime?.semana)}%</b><span class="l">7 días</span></div>
+    <div><b>${fmtPct(GLOBAL?.uptime?.mes)}%</b><span class="l">30 días</span></div>
+    <div><b>${fmtPct(GLOBAL?.uptime?.dias90)}%</b><span class="l">90 días</span></div>
+  </div>
+  ${resp&&resp.length>1?`
+  <div class="spark-h"><span class="l">Tiempo de respuesta · últimos ${resp.length} chequeos</span><b>${resp[resp.length-1].ms} ms</b></div>
+  <div class="spark">${sparkline(resp)}</div>
+  <div class="spark-l"><span class="l">${Math.min(...resp.map(r=>r.ms))} ms</span><span class="l">${Math.max(...resp.map(r=>r.ms))} ms</span></div>`:''}
+  ${GLOBAL?.estado==='op'&&GLOBAL?.operativoDesde?`
+  <div class="od"><span class="l">Operativo desde hace</span><b id="operativoDesde">${esc(duracionDesde(GLOBAL.operativoDesde))}</b></div>`:''}
   ${HISTORIAL.length?`
   <div class="hist-l"><span class="l">Historial · 90 días</span><span class="l">${fechaCorta(HISTORIAL[0].fecha)} — hoy</span></div>
   <div class="hist">${hist}</div>`:''}
@@ -304,11 +355,10 @@ function pintaLado(){
     <button class="bt" data-rss>Canales</button>
   </div>
   <div class="pe-n">
-    <span class="l">Cómo se mide</span>
-    <p>UptimeRobot revisa <b style="color:var(--tx);font-weight:400">app.pahlass.com</b> cada 5 minutos.
-      Última comprobación: <b id="ultimoCheck" style="color:var(--tx);font-weight:400">${esc(haceVivo(GLOBAL?.actualizado))}</b>.
-      El detalle de qué módulo se vio afectado (Finanzas, Agenda...) se sigue reportando a mano en cada
-      incidente de la bitácora.</p>
+    <span class="l">Uptime</span>
+    <p style="margin-top:4px"><b style="color:var(--tx);font-weight:400">app.pahlass.com</b>, vía UptimeRobot</p>
+    <span class="l" style="margin-top:14px;display:block">Última comprobación</span>
+    <p style="margin-top:4px"><b id="ultimoCheck" style="color:var(--tx);font-weight:400">${esc(haceVivo(GLOBAL?.actualizado))}</b></p>
   </div>`;
   el('hdE').className=`hd-e ${g.c}`;
   el('hdE').innerHTML=`<i></i><b>${g.t}</b>`;
