@@ -5,7 +5,7 @@
     "f": "2026-09-18",
     "ti": "Esta página nace",
     "comp": [],
-    "rs": "Estado y novedades de Pahlass, en una página aparte de la plataforma, para que siga funcionando aunque Newton no responda.",
-    "x": "Esta es la bitácora pública de Pahlass: aquí se publican los incidentes, las novedades, los avances en construcción y los avisos de mantenimiento.\n\nPor qué está separada:\n· No comparte servidor ni base de datos con Newton — si Newton se cae, esta página sigue en pie\n· Se actualiza directo desde aquí, sin depender de que la plataforma esté disponible\n· Queda un historial público de cada incidente, con hora de inicio y resolución\n\nPor ahora no hay incidentes abiertos ni componentes degradados. Cuando algo pase, se reporta aquí primero."
+    "rs": "Se ha creado Status Pahlass.",
+    "x": "Se ha desarrollado la pagina Status Pahlass, en la cual, se publicaran noticias, mantenimientos y cualquier novedad que surja dentro de la Plataforma de Pahlass."
   }
 ]
