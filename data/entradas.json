@@ -8,5 +8,16 @@
     "comp": [],
     "rs": "Se ha creado Status Pahlass.",
     "x": "Se ha desarrollado la pagina Status Pahlass, en la cual, se publicaran noticias, mantenimientos y cualquier novedad que surja dentro de la Plataforma de Pahlass."
+  },
+  {
+    "id": "002",
+    "t": "novedad",
+    "f": "2026-09-18",
+    "ti": "Un maestro ya puede ser titular de dos grupos",
+    "rs": "Antes, asignar a un maestro como titular de un segundo grupo le quitaba el primero sin avisar. Ya se puede tener más de uno.",
+    "x": "Algunas escuelas tienen un solo maestro dando clase en dos grupos a la vez. El sistema no lo permitía: al asignarlo como titular de un segundo grupo, perdía el primero en silencio, sin ningún aviso.\n\nSe corrigió la forma en que se guarda esa asignación para que un maestro pueda ser titular de varios grupos al mismo tiempo, sin perder ninguno.\n\nSe asigna igual que siempre, en Personalización → Grupos y asignación.",
+    "comp": [],
+    "div": "education",
+    "ts": "2026-09-18T20:27:47.243Z"
   }
 ]
