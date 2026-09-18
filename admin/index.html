@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel — Bitácora Pahlass</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../logo-pahlass.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --bg2:#141619; --tx:#EFEFEF; --tx2:#A8ACB2; --tx3:#6E737A;
+  --ln:#1F2226; --ln2:#2E3238;
+  --ok:#5E9268; --rie:#AD8A45; --mal:#A35A5A; --az:#5F7CA3;
+  --ui:'Inter Tight',system-ui,-apple-system,sans-serif;
+  --mo:'JetBrains Mono',ui-monospace,monospace;
+}
+html[data-theme="light"]{
+  --bg:#FFFFFF; --bg2:#FAFAFA; --tx:#16181B; --tx2:#54585E; --tx3:#8B9098;
+  --ln:#E8EAEC; --ln2:#D3D6DA;
+  --ok:#3F7A4C; --rie:#8A6A26; --mal:#8F4242; --az:#3F5F8C;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--ui);font-size:15px;line-height:1.55}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0;font-size:inherit;text-align:left}
+.l{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
+.mn{font-family:var(--mo)}
+.w{max-width:960px;margin:0 auto;padding:28px 24px 80px}
+.hd{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--ln);padding-bottom:18px;margin-bottom:26px}
+.hd img{height:22px;filter:invert(1)}
+html[data-theme="light"] .hd img{filter:none}
+.hd h1{font-size:16px;font-weight:500;margin:0;flex:1}
+.bt{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:8px 13px;
+  border:1px solid var(--ln2);color:var(--tx2);transition:.14s;display:inline-block}
+.bt:hover{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.bt.ll{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.bt.ll:hover{background:transparent;color:var(--tx);border-color:var(--ln2)}
+.bt.rojo{border-color:var(--mal);color:var(--mal)}
+.bt.rojo:hover{background:var(--mal);border-color:var(--mal);color:#fff}
+.bt:disabled{opacity:.4;cursor:default;pointer-events:none}
+
+.login{max-width:420px;margin:60px auto 0}
+.login h2{font-size:18px;font-weight:500;margin:0 0 8px}
+.login p{color:var(--tx2);font-size:14px;line-height:1.6;margin:0 0 20px}
+.login ol{color:var(--tx2);font-size:13.5px;line-height:1.8;padding-left:20px;margin:0 0 22px}
+.login code{font-family:var(--mo);background:var(--bg2);padding:1px 5px}
+
+.cp{margin-bottom:18px}
+.cp span{display:block;margin-bottom:7px}
+.cp input,.cp select,.cp textarea{width:100%;padding:8px 0;border:0;border-bottom:1px solid var(--ln2);
+  background:transparent;color:var(--tx);font-size:14.5px;outline:none;font-family:var(--ui)}
+.cp textarea{font-family:var(--mo);font-size:13px;line-height:1.6;resize:vertical;min-height:70px;padding:8px}
+.cp input:focus,.cp select:focus,.cp textarea:focus{border-bottom-color:var(--tx)}
+.cp select{background:var(--bg)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+@media (max-width:640px){ .grid2{grid-template-columns:1fr} }
+
+.ck-row{display:flex;flex-wrap:wrap;gap:14px}
+.ck-row label{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--tx2);cursor:pointer}
+
+.msg{padding:10px 12px;font-size:13px;margin-bottom:18px;border:1px solid var(--ln2)}
+.msg.err{border-color:var(--mal);color:var(--mal)}
+.msg.ok{border-color:var(--ok);color:var(--ok)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start}
+@media (max-width:800px){ .layout{grid-template-columns:1fr} }
+.lista{border:1px solid var(--ln);max-height:70vh;overflow-y:auto}
+.lista button{display:block;width:100%;padding:11px 12px;border-bottom:1px solid var(--ln);font-size:13px}
+.lista button:last-child{border-bottom:0}
+.lista button:hover{background:var(--bg2)}
+.lista button[aria-current="true"]{background:var(--bg2);border-left:2px solid var(--tx);padding-left:10px}
+.lista b{display:block;font-weight:500;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+fieldset{border:1px solid var(--ln);padding:16px;margin:0 0 20px}
+legend{padding:0 6px;font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
+.upd-row{display:grid;grid-template-columns:140px 1fr auto;gap:10px;align-items:start;margin-bottom:10px}
+.upd-row select,.upd-row textarea{margin:0}
+.upd-row button{color:var(--mal);font-size:11px;padding:8px 0}
+.acciones{display:flex;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--ln)}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="hd">
+    <img src="../logo-pahlass.png" alt="Pahlass">
+    <h1>Panel de la bitácora</h1>
+    <button class="bt" id="tema">Tema</button>
+    <button class="bt" id="salir" hidden>Desconectar</button>
+  </div>
+
+  <div id="login" class="login" hidden>
+    <h2>Conecta tu cuenta de GitHub</h2>
+    <p>Este panel escribe directo en el repositorio <span class="mn">pahlass/status</span> — sin
+      servidor propio, sin base de datos. Necesita un token de acceso personal con permiso de
+      escritura solo sobre ese repositorio.</p>
+    <ol>
+      <li>Ve a <span class="mn">github.com/settings/personal-access-tokens/new</span></li>
+      <li>Repository access → Only select repositories → <span class="mn">pahlass/status</span></li>
+      <li>Permissions → Repository permissions → Contents → <b>Read and write</b></li>
+      <li>Generate token, y pégalo aquí abajo</li>
+    </ol>
+    <div class="cp"><span class="l">Token de acceso</span><input id="token" type="password" autocomplete="off" placeholder="github_pat_..."></div>
+    <div id="loginMsg"></div>
+    <button class="bt ll" id="conectar" style="width:100%;text-align:center;padding:11px">Conectar</button>
+    <p style="margin-top:16px;font-size:12px;color:var(--tx3)">El token se guarda solo en este navegador
+      (localStorage) — nunca se envía a ningún lado más que a GitHub.</p>
+  </div>
+
+  <div id="panel" hidden>
+    <div id="panelMsg"></div>
+    <div class="layout">
+      <div>
+        <button class="bt ll" id="nueva" style="width:100%;text-align:center;padding:10px;margin-bottom:14px">+ Nueva entrada</button>
+        <div class="lista" id="lista"></div>
+      </div>
+      <form id="form"></form>
+    </div>
+  </div>
+</div>
+
+<script>
+const REPO='pahlass/status', RAMA='main', RUTA='data/entradas.json';
+const el=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+function utf8ToB64(str){
+  const bytes=new TextEncoder().encode(str);
+  let bin=''; bytes.forEach(b=>bin+=String.fromCharCode(b));
+  return btoa(bin);
+}
+function b64ToUtf8(b64){
+  const bin=atob(b64);
+  const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+const TIPOS=[['novedad','Novedad'],['avance','Avance'],['aviso','Aviso'],['prensa','Prensa'],['estado','Estado (incidente)']];
+const SEVS=[['deg','Degradado'],['par','Interrupción parcial'],['caido','Interrumpido'],['mant','Mantenimiento']];
+const FASES=[['investigando','Investigando'],['identificado','Identificado'],['monitoreando','Monitoreando'],['resuelto','Resuelto']];
+const PREFIJOS={novedad:'NOV',avance:'AV',aviso:'AVI',prensa:'PR',estado:'INC'};
+
+let TOKEN=null, SHA=null, ENTRADAS=[], COMPONENTES=[], activaId=null, updsForm=[];
+
+function apiHeaders(){ return { 'Authorization':`Bearer ${TOKEN}`, 'Accept':'application/vnd.github+json' }; }
+
+async function verificarToken(t){
+  const r=await fetch(`https://api.github.com/repos/${REPO}`,{headers:{'Authorization':`Bearer ${t}`,'Accept':'application/vnd.github+json'}});
+  return r.ok;
+}
+
+async function cargarDatos(){
+  const [rEnt, rComp] = await Promise.all([
+    fetch(`https://api.github.com/repos/${REPO}/contents/${RUTA}?ref=${RAMA}`,{headers:apiHeaders()}),
+    fetch(`https://api.github.com/repos/${REPO}/contents/data/componentes.json?ref=${RAMA}`,{headers:apiHeaders()}),
+  ]);
+  if(!rEnt.ok) throw new Error('No se pudo leer data/entradas.json ('+rEnt.status+')');
+  const dEnt=await rEnt.json();
+  SHA=dEnt.sha;
+  ENTRADAS=JSON.parse(b64ToUtf8(dEnt.content));
+  if(rComp.ok){ const dComp=await rComp.json(); COMPONENTES=JSON.parse(b64ToUtf8(dComp.content)); }
+}
+
+async function guardar(mensaje){
+  const contenido=utf8ToB64(JSON.stringify(ENTRADAS,null,2)+'\n');
+  const r=await fetch(`https://api.github.com/repos/${REPO}/contents/${RUTA}`,{
+    method:'PUT', headers:{...apiHeaders(),'Content-Type':'application/json'},
+    body:JSON.stringify({ message:mensaje, content:contenido, sha:SHA, branch:RAMA }),
+  });
+  if(!r.ok){ const e=await r.json().catch(()=>({})); throw new Error(e.message||`GitHub respondió ${r.status}`); }
+  const d=await r.json();
+  SHA=d.content.sha;
+}
+
+function siguienteId(tipo){
+  const pre=PREFIJOS[tipo]||'ENT';
+  const usados=ENTRADAS.filter(e=>e.id&&e.id.startsWith(pre+'-')||/^\d+$/.test(e.id)&&tipo==='novedad')
+    .map(e=>parseInt((e.id.match(/(\d+)$/)||[])[1],10)).filter(n=>!isNaN(n));
+  const n=(usados.length?Math.max(...usados):0)+1;
+  return tipo==='novedad'? String(n).padStart(3,'0') : `${pre}-${String(n).padStart(2,'0')}`;
+}
+
+function pintaLista(){
+  const ordenadas=[...ENTRADAS].sort((a,b)=>new Date(b.f)-new Date(a.f));
+  el('lista').innerHTML=ordenadas.map(e=>`
+    <button type="button" data-id="${esc(e.id)}" aria-current="${e.id===activaId}">
+      <b>${esc(e.ti)}</b>
+      <span class="l">${esc(e.t)} · ${esc(e.f)}${e.t==='estado'&&e.abierto?' · abierto':''}</span>
+    </button>`).join('') || '<div style="padding:14px" class="l">Sin entradas todavía</div>';
+}
+
+function formularioVacio(tipo){
+  return { id:siguienteId(tipo), t:tipo, f:new Date().toISOString().slice(0,10), ti:'', rs:'', x:'', comp:[],
+    sev:'deg', abierto:true, fin:null, upd:[] };
+}
+
+function pintaForm(entrada){
+  const e=entrada;
+  const esInc=e.t==='estado';
+  updsForm=(e.upd||[]).map(u=>({...u}));
+  el('form').innerHTML=`
+    <div class="grid2">
+      <div class="cp"><span class="l">Tipo</span>
+        <select id="fTipo">${TIPOS.map(([k,n])=>`<option value="${k}" ${k===e.t?'selected':''}>${n}</option>`).join('')}</select>
+      </div>
+      <div class="cp"><span class="l">ID</span><input id="fId" value="${esc(e.id)}"></div>
+    </div>
+    <div class="grid2">
+      <div class="cp"><span class="l">Título</span><input id="fTi" value="${esc(e.ti)}" required></div>
+      <div class="cp"><span class="l">Fecha</span><input id="fF" type="date" value="${esc(e.f).slice(0,10)}"></div>
+    </div>
+    <div class="cp"><span class="l">Resumen (una línea, aparece siempre visible)</span><textarea id="fRs" style="min-height:44px">${esc(e.rs)}</textarea></div>
+    <div class="cp"><span class="l">Componentes afectados</span>
+      <div class="ck-row">${COMPONENTES.map(c=>`<label><input type="checkbox" value="${esc(c.k)}" ${e.comp?.includes(c.k)?'checked':''}> ${esc(c.n)}</label>`).join('')}</div>
+    </div>
+    <fieldset id="fEstadoBox" ${esInc?'':'hidden'}>
+      <legend>Incidente</legend>
+      <div class="grid2">
+        <div class="cp"><span class="l">Severidad</span>
+          <select id="fSev">${SEVS.map(([k,n])=>`<option value="${k}" ${k===e.sev?'selected':''}>${n}</option>`).join('')}</select>
+        </div>
+        <div class="cp"><span class="l">Estado</span>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px"><input type="checkbox" id="fAbierto" ${e.abierto?'checked':''}> Sigue abierto</label>
+        </div>
+      </div>
+      <span class="l">Actualizaciones (la más reciente arriba)</span>
+      <div id="updList" style="margin-top:10px"></div>
+      <button type="button" class="bt" id="agregarUpd" style="margin-top:6px">+ Agregar actualización</button>
+    </fieldset>
+    <div class="cp"><span class="l">Cuerpo (líneas con · son viñetas; una línea con " es cita; línea en blanco separa párrafos)</span>
+      <textarea id="fX" style="min-height:140px">${esc(e.x||'')}</textarea>
+    </div>
+    <div class="acciones">
+      <button type="submit" class="bt ll">Publicar</button>
+      ${ENTRADAS.some(x=>x.id===e.id)?'<button type="button" class="bt rojo" id="borrar">Eliminar</button>':''}
+    </div>`;
+  el('fTipo').addEventListener('change',ev=>{ el('fEstadoBox').hidden = ev.target.value!=='estado'; });
+  pintaUpds();
+  el('agregarUpd').addEventListener('click',()=>{
+    updsForm.unshift({h:new Date().toISOString(),e:'investigando',x:''});
+    pintaUpds();
+  });
+  const borrar=el('borrar');
+  if(borrar) borrar.addEventListener('click',async ()=>{
+    if(!confirm(`¿Eliminar "${e.ti}"? No se puede deshacer desde aquí.`)) return;
+    ENTRADAS=ENTRADAS.filter(x=>x.id!==e.id);
+    await accionGuardar(`Bitácora: eliminar ${e.id}`);
+    activaId=null; pintaLista(); pintaForm(formularioVacio('novedad'));
+  });
+}
+
+function pintaUpds(){
+  el('updList').innerHTML=updsForm.map((u,i)=>`
+    <div class="upd-row">
+      <select data-i="${i}" class="upd-fase">${FASES.map(([k,n])=>`<option value="${k}" ${k===u.e?'selected':''}>${n}</option>`).join('')}</select>
+      <textarea data-i="${i}" class="upd-x" style="min-height:44px">${esc(u.x)}</textarea>
+      <button type="button" data-i="${i}" class="upd-del">Quitar</button>
+    </div>`).join('') || '<p class="l">Sin actualizaciones todavía.</p>';
+  el('updList').querySelectorAll('.upd-fase').forEach(s=>s.addEventListener('change',ev=>{ updsForm[+ev.target.dataset.i].e=ev.target.value; }));
+  el('updList').querySelectorAll('.upd-x').forEach(t=>t.addEventListener('input',ev=>{ updsForm[+ev.target.dataset.i].x=ev.target.value; }));
+  el('updList').querySelectorAll('.upd-del').forEach(b=>b.addEventListener('click',ev=>{ updsForm.splice(+ev.target.dataset.i,1); pintaUpds(); }));
+}
+
+async function accionGuardar(mensaje){
+  try{
+    await guardar(mensaje);
+    el('panelMsg').innerHTML=`<div class="msg ok">Publicado. GitHub Pages se actualiza en menos de un minuto.</div>`;
+  }catch(err){
+    el('panelMsg').innerHTML=`<div class="msg err">No se pudo publicar: ${esc(err.message)}</div>`;
+    throw err;
+  }
+}
+
+el('form').addEventListener('submit', async ev=>{
+  ev.preventDefault();
+  const tipo=el('fTipo').value;
+  const nueva={
+    id: el('fId').value.trim(),
+    t: tipo,
+    f: el('fF').value,
+    ti: el('fTi').value.trim(),
+    rs: el('fRs').value.trim(),
+    x: el('fX').value,
+    comp: [...document.querySelectorAll('#form .ck-row input:checked')].map(c=>c.value),
+  };
+  if(tipo==='estado'){
+    nueva.sev=el('fSev').value;
+    nueva.abierto=el('fAbierto').checked;
+    nueva.upd=updsForm;
+    if(!nueva.abierto && !ENTRADAS.find(x=>x.id===nueva.id)?.fin) nueva.fin=new Date().toISOString();
+    else if(!nueva.abierto) nueva.fin=ENTRADAS.find(x=>x.id===nueva.id)?.fin||new Date().toISOString();
+  }
+  if(!nueva.id||!nueva.ti){ el('panelMsg').innerHTML='<div class="msg err">Falta el ID o el título.</div>'; return; }
+  const idx=ENTRADAS.findIndex(x=>x.id===nueva.id);
+  if(idx>=0) ENTRADAS[idx]={...ENTRADAS[idx],...nueva}; else ENTRADAS.push(nueva);
+  await accionGuardar(idx>=0?`Bitácora: editar ${nueva.id}`:`Bitácora: nueva entrada ${nueva.id}`);
+  activaId=nueva.id;
+  pintaLista();
+});
+
+el('lista').addEventListener('click',ev=>{
+  const b=ev.target.closest('button[data-id]'); if(!b) return;
+  activaId=b.dataset.id;
+  pintaLista();
+  pintaForm(ENTRADAS.find(x=>x.id===activaId));
+});
+el('nueva').addEventListener('click',()=>{ activaId=null; pintaLista(); pintaForm(formularioVacio('novedad')); });
+
+el('conectar').addEventListener('click', async ()=>{
+  const t=el('token').value.trim();
+  if(!t){ return; }
+  el('loginMsg').innerHTML='<div class="msg">Verificando…</div>';
+  const ok=await verificarToken(t).catch(()=>false);
+  if(!ok){ el('loginMsg').innerHTML='<div class="msg err">No se pudo acceder al repositorio con ese token. Revisa el permiso de Contents.</div>'; return; }
+  try{ localStorage.setItem('pahlass_admin_token',t); }catch(_){}
+  arrancar(t);
+});
+el('salir').addEventListener('click',()=>{
+  try{ localStorage.removeItem('pahlass_admin_token'); }catch(_){}
+  location.reload();
+});
+el('tema').addEventListener('click',()=>{
+  const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  try{localStorage.setItem('bt.t',n);}catch(_){}
+});
+
+async function arrancar(token){
+  TOKEN=token;
+  el('login').hidden=true; el('salir').hidden=false;
+  el('panelMsg').innerHTML='<div class="msg">Cargando…</div>';
+  el('panel').hidden=false;
+  try{
+    await cargarDatos();
+    el('panelMsg').innerHTML='';
+    pintaLista();
+    pintaForm(formularioVacio('novedad'));
+  }catch(err){
+    el('panelMsg').innerHTML=`<div class="msg err">${esc(err.message)}</div>`;
+  }
+}
+
+(function(){
+  let t='dark';
+  try{t=localStorage.getItem('bt.t')||'dark';}catch(_){}
+  document.documentElement.setAttribute('data-theme',t);
+  let guardado=null;
+  try{guardado=localStorage.getItem('pahlass_admin_token');}catch(_){}
+  if(guardado) arrancar(guardado);
+  else el('login').hidden=false;
+})();
+</script>
+</body>
+</html>
