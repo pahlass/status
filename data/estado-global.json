@@ -1,0 +1,10 @@
+{
+  "actualizado": null,
+  "monitor": "newton-production-b3b4.up.railway.app",
+  "url": "https://app.pahlass.com",
+  "estado": "pendiente",
+  "tiempoRespuestaMs": null,
+  "uptime": { "dia": null, "semana": null, "mes": null, "dias90": null },
+  "medidoPor": "UptimeRobot",
+  "intervaloMin": 5
+}

@@ -87,22 +87,6 @@ html[data-theme="light"] .mk img{filter:none}
 .pe-m span{display:block;margin-top:4px}
 @media (max-width:900px){ .pe-m{padding-left:0} }
 
-.cm{padding:11px 0;border-bottom:1px solid var(--ln)}
-.cm:last-of-type{border-bottom:0}
-.cm-h{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.cm-n{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cm-e{width:7px;height:7px;flex:none}
-.cm-e.ok{background:var(--ok);opacity:.6} .cm-e.rie{background:var(--rie)}
-.cm-e.mal{background:var(--mal)} .cm-e.az{background:var(--az)}
-.d90{display:flex;gap:1px;height:14px}
-.d90 i{flex:1;min-width:1px;position:relative;background:var(--tx);opacity:.13;transition:.1s}
-.d90 i.rie{background:var(--rie);opacity:1}
-.d90 i.mal{background:var(--mal);opacity:1}
-.d90 i.az{background:var(--az);opacity:1}
-.d90 i:hover{opacity:1;z-index:4}
-.d90 i:hover::after{content:attr(data-t);position:absolute;bottom:calc(100% + 6px);left:50%;
-  transform:translateX(-50%);white-space:nowrap;padding:5px 8px;font:11px/1.4 var(--mo);
-  background:var(--tx);color:var(--bg);z-index:9;pointer-events:none}
 .pe-b{display:flex;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--ln)}
 .pe-b .bt{flex:1;text-align:center}
 .pe-n{margin-top:18px;padding-top:16px;border-top:1px solid var(--ln)}
@@ -215,17 +199,17 @@ html[data-theme="light"] .mk img{filter:none}
 
 <script>
 /* ════════ CARGA DE DATOS REALES ════════
-   componentes.json: estado ACTUAL de cada componente (lo edita el panel /admin).
-   entradas.json: bitácora completa (estado/novedad/avance/aviso/prensa).
-   El historial de 90 días de cada componente NO se inventa ni se mide con un
-   heartbeat automático (todavía) — se calcula a partir de los incidentes
-   ("estado") ya publicados en la bitácora: si un incidente cubre ese
-   componente y esa fecha, ese día se pinta con la severidad del incidente.
-   Ver "Cómo se mide" en el panel lateral. */
+   estado-global.json: UN SOLO estado de Newton en su conjunto (no por
+   componente) — lo escribe scripts/actualizar-estado.mjs, corrido cada
+   5 minutos por .github/workflows/monitor.yml, que le pregunta a
+   UptimeRobot el estado real de app.pahlass.com. Nadie edita este
+   archivo a mano.
+   componentes.json: solo un catálogo de nombres, para poder decir "esta
+   novedad afectó a Finanzas" dentro de una entrada de la bitácora — ya
+   no tiene un estado propio ni barra de 90 días por separado.
+   entradas.json: la bitácora completa (estado/novedad/avance/aviso/prensa),
+   se sigue editando a mano (o desde /admin más adelante). */
 const HOY = new Date();
-const EST={op:{n:'Operativo',c:'ok'},deg:{n:'Degradado',c:'rie'},
-  par:{n:'Interrupción parcial',c:'rie'},caido:{n:'Interrumpido',c:'mal'},
-  mant:{n:'En mantenimiento',c:'az'}};
 const FASE={investigando:{n:'Investigando',c:'rie'},identificado:{n:'Identificado',c:'rie'},
   monitoreando:{n:'Monitoreando',c:'az'},resuelto:{n:'Resuelto',c:'ok'}};
 const TIPO={
@@ -235,37 +219,8 @@ const TIPO={
   aviso:   {n:'Aviso',    c:'rie'},
   prensa:  {n:'Prensa',   c:''},
 };
-const RANGO_SEV=['caido','par','deg','mant'];
 
-let COMP=[], E=[], H={};
-
-function peorSeveridad(sevs){ for(const s of RANGO_SEV) if(sevs.includes(s)) return s; return null; }
-
-function calcularHistorial(compKey, incidentes){
-  const DIAS=90, hoy0=new Date(HOY); hoy0.setHours(0,0,0,0);
-  const out=[];
-  for(let idx=0; idx<DIAS; idx++){
-    const d=DIAS-1-idx;
-    const inicioDia=new Date(hoy0); inicioDia.setDate(inicioDia.getDate()-d);
-    const finDia=new Date(inicioDia); finDia.setDate(finDia.getDate()+1);
-    let min=0, sevs=[];
-    for(const inc of incidentes){
-      if(!inc.comp.includes(compKey)) continue;
-      const ini=inc.f, fin=inc.fin||HOY;
-      const ini2=ini>inicioDia?ini:inicioDia, fin2=fin<finDia?fin:finDia;
-      const ms=fin2-ini2;
-      if(ms>0){ min+=Math.round(ms/60000); sevs.push(inc.sev); }
-    }
-    const peor=peorSeveridad(sevs);
-    out.push(peor?{e:peor,min}:{e:'op',min:0});
-  }
-  return out;
-}
-
-const disp=k=>{const h=H[k];
-  const c=h.reduce((a,d)=>a+(d.e==='op'||d.e==='mant'?0:d.min),0);
-  return (100-c/(h.length*1440)*100).toFixed(2);};
-const dispG=()=>COMP.length?(COMP.reduce((a,c)=>a+ +disp(c.k),0)/COMP.length).toFixed(2):'100.00';
+let COMP=[], E=[], GLOBAL=null;
 
 /* ════════ UTILIDADES ════════ */
 const el=id=>document.getElementById(id);
@@ -284,11 +239,11 @@ function hace(f){const m=Math.round((HOY-f)/60000);
 function dur(a,b){const m=Math.round((b-a)/60000);
   return m<60?`${m} min`:`${Math.floor(m/60)} h ${m%60} min`;}
 function gl(){
-  if(COMP.some(c=>c.e==='caido')) return {c:'mal',t:'Interrupción del servicio'};
-  if(COMP.some(c=>c.e==='par'))   return {c:'mal',t:'Interrupción parcial'};
-  if(COMP.some(c=>c.e==='deg'))   return {c:'rie',t:'Un componente degradado'};
-  if(COMP.some(c=>c.e==='mant'))  return {c:'az', t:'Mantenimiento en curso'};
-  return {c:'ok',t:'Todos los sistemas operando'};
+  if(!GLOBAL || GLOBAL.estado==='pendiente') return {c:'az',t:'Verificando estado…'};
+  if(GLOBAL.estado==='caido') return {c:'mal',t:'Newton no responde'};
+  if(GLOBAL.estado==='deg')   return {c:'rie',t:'Newton con lentitud'};
+  if(GLOBAL.estado==='mant')  return {c:'az', t:'Mantenimiento en curso'};
+  return {c:'ok',t:'Newton está operativo'};
 }
 function cuerpo(t){let o='',b=[];
   const v=()=>{if(b.length){o+=`<ul>${b.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;b=[];}};
@@ -306,33 +261,27 @@ const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
 /* ════════ LADO DERECHO ════════ */
 function pintaLado(){
   const g=gl(), act=E.filter(e=>e.t==='estado'&&e.abierto);
+  const g90=GLOBAL?.uptime?.dias90, uptime90=g90!=null&&g90!==''?Number(g90).toFixed(2):'—';
+  const tr=GLOBAL?.tiempoRespuestaMs!=null?`${GLOBAL.tiempoRespuestaMs} ms`:'—';
+  const ultima=GLOBAL?.actualizado?hace(new Date(GLOBAL.actualizado)):'sin datos aún';
   el('lado').innerHTML=`
   <div class="pe">
     <div class="pe-t"><span class="pe-s ${g.c}"></span><h2>${g.t}</h2></div>
     <div class="pe-m">
-      <div><b>${dispG()}%</b><span class="l">90 días</span></div>
-      <div><b>${COMP.filter(c=>c.e==='op').length}/${COMP.length}</b><span class="l">Operativos</span></div>
+      <div><b>${uptime90}%</b><span class="l">90 días</span></div>
+      <div><b>${tr}</b><span class="l">Respuesta</span></div>
       <div><b>${act.length}</b><span class="l">Abiertos</span></div>
     </div>
   </div>
-  <div class="l" style="margin-bottom:12px">Componentes · 90 días</div>
-  ${COMP.map(c=>`<div class="cm">
-    <div class="cm-h"><span class="cm-n">${esc(c.n)}</span>
-      <span class="cm-e ${EST[c.e].c}" title="${EST[c.e].n}"></span></div>
-    <div class="d90">${(H[c.k]||[]).map((d,i)=>{const n=89-i;
-      const t=d.e==='op'?'sin incidencias':`${EST[d.e].n.toLowerCase()} · ${d.min} min`;
-      return `<i class="${EST[d.e].c==='ok'?'':EST[d.e].c}" data-t="${n===0?'hoy':`hace ${n} d`} — ${t}"></i>`;
-    }).join('')}</div>
-  </div>`).join('')}
   <div class="pe-b">
     <button class="bt ll" data-sus>Avisos</button>
     <button class="bt" data-rss>Canales</button>
   </div>
   <div class="pe-n">
     <span class="l">Cómo se mide</span>
-    <p>El estado actual de cada componente se actualiza a mano cuando cambia. El historial de 90 días
-      se calcula a partir de los incidentes ya publicados en esta bitácora, no con un monitoreo automático
-      todavía.</p>
+    <p>UptimeRobot revisa <b style="color:var(--tx);font-weight:400">app.pahlass.com</b> cada 5 minutos.
+      Última comprobación: ${esc(ultima)}. El detalle de qué módulo se vio afectado (Finanzas, Agenda...)
+      se sigue reportando a mano en cada incidente de la bitácora.</p>
   </div>`;
   el('hdE').className=`hd-e ${g.c}`;
   el('hdE').innerHTML=`<i></i><b>${g.t}</b>`;
@@ -393,8 +342,6 @@ document.addEventListener('click',ev=>{
   if(t.closest('#sok')){
     const correo=(el('sc')||{}).value||'';
     const wa=(el('st')||{}).value||'';
-    const marcados=[...document.querySelectorAll('.ck input:checked')]
-      .map((_,i)=>i); // solo para el resumen visual, el envío real es por correo
     const asunto=encodeURIComponent('Alta en avisos de estado — Pahlass');
     const cuerpoMail=encodeURIComponent(`Quiero recibir avisos de estado de Pahlass.\n\nCorreo: ${correo}\nWhatsApp: ${wa||'(no proporcionado)'}`);
     window.location.href=`mailto:hola@pahlass.com?subject=${asunto}&body=${cuerpoMail}`;
@@ -446,11 +393,13 @@ document.addEventListener('click',ev=>{
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!el('sr').hidden) cierra();});
 
 async function cargar(){
-  const [compRes, entRes] = await Promise.all([
+  const [compRes, entRes, globalRes] = await Promise.all([
     fetch('data/componentes.json').then(r=>r.json()),
     fetch('data/entradas.json').then(r=>r.json()),
+    fetch('data/estado-global.json').then(r=>r.json()).catch(()=>null),
   ]);
   COMP = compRes;
+  GLOBAL = globalRes;
   E = entRes.map(e=>({
     ...e,
     f: new Date(e.f),
@@ -458,8 +407,6 @@ async function cargar(){
     comp: e.comp || [],
     upd: (e.upd||[]).map(u=>({...u, h:new Date(u.h)})),
   })).sort((a,b)=>b.f-a.f);
-  const incidentes = E.filter(e=>e.t==='estado');
-  COMP.forEach(c=>{ H[c.k]=calcularHistorial(c.k, incidentes); });
 }
 
 (function(){

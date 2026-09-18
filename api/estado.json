@@ -1,47 +1,9 @@
 {
-  "actualizado": "2026-09-17T23:51:13.035Z",
-  "global": "operativo",
-  "componentes": [
-    {
-      "clave": "app",
-      "nombre": "Aplicación",
-      "estado": "op"
-    },
-    {
-      "clave": "exp",
-      "nombre": "Expedientes",
-      "estado": "op"
-    },
-    {
-      "clave": "agenda",
-      "nombre": "Agenda y asistencia",
-      "estado": "op"
-    },
-    {
-      "clave": "eval",
-      "nombre": "Evaluación",
-      "estado": "op"
-    },
-    {
-      "clave": "fin",
-      "nombre": "Finanzas",
-      "estado": "op"
-    },
-    {
-      "clave": "inv",
-      "nombre": "Inventario",
-      "estado": "op"
-    },
-    {
-      "clave": "auth",
-      "nombre": "Acceso y cuentas",
-      "estado": "op"
-    },
-    {
-      "clave": "export",
-      "nombre": "Exportaciones",
-      "estado": "op"
-    }
-  ],
+  "actualizado": "2026-09-18T01:14:11.231Z",
+  "global": {
+    "estado": "pendiente",
+    "uptime90d": null,
+    "medidoPor": "UptimeRobot"
+  },
   "incidentesAbiertos": []
 }

@@ -8,21 +8,26 @@ para que siga funcionando aunque la plataforma no responda.
 ## Cómo está armado
 
 - `index.html` — la página pública. Es estática: en cada carga hace `fetch()` de
-  `data/entradas.json` y `data/componentes.json` y arma todo con JavaScript en el navegador.
-  No hay build step ni framework.
+  `data/entradas.json`, `data/componentes.json` y `data/estado-global.json`, y arma todo con
+  JavaScript en el navegador. No hay build step ni framework.
 - `data/entradas.json` — la bitácora completa: incidentes (`t:"estado"`), novedades, avances,
   avisos y prensa. Cada entrada es un objeto; ver los campos usados en `index.html` (`entrada()`).
-- `data/componentes.json` — el estado ACTUAL de cada componente (Aplicación, Agenda, Finanzas...).
-  Se edita a mano cada vez que cambia.
-- El historial de 90 días que se ve en el panel lateral **no es un monitoreo automático**: se
-  calcula en el navegador a partir de los incidentes ya publicados en `entradas.json` (qué
-  componentes tocó cada incidente y cuánto duró). Si algún día se agrega un chequeo automático
-  real (ej. un GitHub Action que haga ping a Newton cada minuto), esa pieza se reemplaza sin tocar
-  el resto de la página.
+  Se sigue editando a mano (o desde `/admin` más adelante).
+- `data/componentes.json` — solo un catálogo de nombres (Aplicación, Agenda, Finanzas...), para
+  poder decir "esta novedad afectó a Finanzas" dentro de una entrada. Ya no tiene un estado propio.
+- `data/estado-global.json` — **el estado real de Newton en su conjunto**, un solo valor
+  (op/deg/caido/mant), NO por componente. Lo escribe automáticamente
+  `scripts/actualizar-estado.mjs`, corrido cada 5 minutos por
+  `.github/workflows/monitor.yml`, que le pregunta a **UptimeRobot** (ya monitorea
+  `app.pahlass.com`) el estado actual vía su API. Nadie edita este archivo a mano — si hace falta
+  cambiar de qué monitor se lee, se edita `NOMBRE_MONITOR` en ese script. El secreto
+  `UPTIMEROBOT_API_KEY` (Read-Only) vive en Settings → Secrets and variables → Actions del repo,
+  nunca en el código ni expuesto al navegador.
 - `bitacora.xml`, `incidentes.xml`, `api/estado.json` — versiones "de máquina" de lo mismo, para
   quien quiera consultarlo desde otra herramienta (lector RSS, un monitor externo). Se generan con
   `scripts/generar-feeds.mjs` a partir de los mismos datos — **hay que volver a correrlo después de
-  editar `data/*.json` a mano** (`node scripts/generar-feeds.mjs`). El panel `/admin` lo hace solo.
+  editar `data/entradas.json` a mano** (`node scripts/generar-feeds.mjs`); el Action de monitoreo y
+  el panel `/admin` lo hacen solos.
 - `CNAME` — apunta el dominio personalizado `status.pahlass.com` (configurado en GitHub Pages).
 
 ## Publicar una entrada nueva (sin el panel)

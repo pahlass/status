@@ -10,7 +10,15 @@ import { dirname, join } from "node:path";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const entradas = JSON.parse(readFileSync(join(raiz, "data/entradas.json"), "utf8"));
-const componentes = JSON.parse(readFileSync(join(raiz, "data/componentes.json"), "utf8"));
+// estado-global.json lo escribe scripts/actualizar-estado.mjs (vía UptimeRobot,
+// ver .github/workflows/monitor.yml) — puede no existir todavía en un checkout
+// nuevo, de ahí el try/catch con un valor por default razonable.
+let estadoGlobal = null;
+try {
+  estadoGlobal = JSON.parse(readFileSync(join(raiz, "data/estado-global.json"), "utf8"));
+} catch {
+  // Aún no se ha corrido el monitor — el feed sale con global "pendiente".
+}
 
 const SITIO = "https://status.pahlass.com";
 const esc = (s) => String(s ?? "").replace(/[&<>]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
@@ -56,23 +64,15 @@ writeFileSync(
 );
 
 const abiertos = entradas.filter((e) => e.t === "estado" && e.abierto);
-const global = componentes.some((c) => c.e === "caido")
-  ? "interrumpido"
-  : componentes.some((c) => c.e === "par")
-    ? "interrupcion_parcial"
-    : componentes.some((c) => c.e === "deg")
-      ? "degradado"
-      : componentes.some((c) => c.e === "mant")
-        ? "mantenimiento"
-        : "operativo";
 
 writeFileSync(
   join(raiz, "api/estado.json"),
   JSON.stringify(
     {
       actualizado: new Date().toISOString(),
-      global,
-      componentes: componentes.map((c) => ({ clave: c.k, nombre: c.n, estado: c.e })),
+      global: estadoGlobal
+        ? { estado: estadoGlobal.estado, uptime90d: estadoGlobal.uptime?.dias90 ?? null, medidoPor: estadoGlobal.medidoPor }
+        : { estado: "pendiente", uptime90d: null, medidoPor: null },
       incidentesAbiertos: abiertos.map((e) => ({
         id: e.id,
         titulo: e.ti,
