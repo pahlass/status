@@ -142,7 +142,8 @@ const SEVS=[['deg','Degradado'],['par','Interrupción parcial'],['caido','Interr
 const FASES=[['investigando','Investigando'],['identificado','Identificado'],['monitoreando','Monitoreando'],['resuelto','Resuelto']];
 const PREFIJOS={novedad:'NOV',avance:'AV',aviso:'AVI',prensa:'PR',estado:'INC'};
 
-let TOKEN=null, SHA=null, ENTRADAS=[], COMPONENTES=[], activaId=null, updsForm=[];
+let TOKEN=null, SHA=null, ENTRADAS=[], COMPONENTES=[], DIVISIONES=[], activaId=null, updsForm=[];
+const nombreDiv=k=>(DIVISIONES.find(d=>d.k===k)||{n:k}).n;
 
 function apiHeaders(){ return { 'Authorization':`Bearer ${TOKEN}`, 'Accept':'application/vnd.github+json' }; }
 
@@ -152,15 +153,17 @@ async function verificarToken(t){
 }
 
 async function cargarDatos(){
-  const [rEnt, rComp] = await Promise.all([
+  const [rEnt, rComp, rDiv] = await Promise.all([
     fetch(`https://api.github.com/repos/${REPO}/contents/${RUTA}?ref=${RAMA}`,{headers:apiHeaders()}),
     fetch(`https://api.github.com/repos/${REPO}/contents/data/componentes.json?ref=${RAMA}`,{headers:apiHeaders()}),
+    fetch(`https://api.github.com/repos/${REPO}/contents/data/divisiones.json?ref=${RAMA}`,{headers:apiHeaders()}),
   ]);
   if(!rEnt.ok) throw new Error('No se pudo leer data/entradas.json ('+rEnt.status+')');
   const dEnt=await rEnt.json();
   SHA=dEnt.sha;
   ENTRADAS=JSON.parse(b64ToUtf8(dEnt.content));
   if(rComp.ok){ const dComp=await rComp.json(); COMPONENTES=JSON.parse(b64ToUtf8(dComp.content)); }
+  if(rDiv.ok){ const dDiv=await rDiv.json(); DIVISIONES=JSON.parse(b64ToUtf8(dDiv.content)); }
 }
 
 async function guardar(mensaje){
@@ -187,12 +190,12 @@ function pintaLista(){
   el('lista').innerHTML=ordenadas.map(e=>`
     <button type="button" data-id="${esc(e.id)}" aria-current="${e.id===activaId}">
       <b>${esc(e.ti)}</b>
-      <span class="l">${esc(e.t)} · ${esc(e.f)}${e.t==='estado'&&e.abierto?' · abierto':''}</span>
+      <span class="l">${esc(e.t)}${e.div?` · ${esc(nombreDiv(e.div))}`:''} · ${esc(e.f)}${e.t==='estado'&&e.abierto?' · abierto':''}</span>
     </button>`).join('') || '<div style="padding:14px" class="l">Sin entradas todavía</div>';
 }
 
 function formularioVacio(tipo){
-  return { id:siguienteId(tipo), t:tipo, f:new Date().toISOString().slice(0,10), ti:'', rs:'', x:'', comp:[],
+  return { id:siguienteId(tipo), t:tipo, f:new Date().toISOString().slice(0,10), ti:'', rs:'', x:'', comp:[], div:null,
     sev:'deg', abierto:true, fin:null, upd:[] };
 }
 
@@ -208,9 +211,15 @@ function pintaForm(entrada){
       <div class="cp"><span class="l">ID</span><input id="fId" value="${esc(e.id)}"></div>
     </div>
     <div class="grid2">
-      <div class="cp"><span class="l">Título</span><input id="fTi" value="${esc(e.ti)}" required></div>
+      <div class="cp"><span class="l">División</span>
+        <select id="fDiv">
+          <option value="">General (toda la empresa)</option>
+          ${DIVISIONES.map(d=>`<option value="${esc(d.k)}" ${d.k===e.div?'selected':''}>${esc(d.n)}</option>`).join('')}
+        </select>
+      </div>
       <div class="cp"><span class="l">Fecha</span><input id="fF" type="date" value="${esc(e.f).slice(0,10)}"></div>
     </div>
+    <div class="cp"><span class="l">Título</span><input id="fTi" value="${esc(e.ti)}" required></div>
     <div class="cp"><span class="l">Resumen (una línea, aparece siempre visible)</span><textarea id="fRs" style="min-height:44px">${esc(e.rs)}</textarea></div>
     <div class="cp"><span class="l">Componentes afectados</span>
       <div class="ck-row">${COMPONENTES.map(c=>`<label><input type="checkbox" value="${esc(c.k)}" ${e.comp?.includes(c.k)?'checked':''}> ${esc(c.n)}</label>`).join('')}</div>
@@ -284,6 +293,7 @@ el('form').addEventListener('submit', async ev=>{
     rs: el('fRs').value.trim(),
     x: el('fX').value,
     comp: [...document.querySelectorAll('#form .ck-row input:checked')].map(c=>c.value),
+    div: el('fDiv').value || null,
   };
   if(tipo==='estado'){
     nueva.sev=el('fSev').value;

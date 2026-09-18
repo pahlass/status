@@ -15,6 +15,10 @@ para que siga funcionando aunque la plataforma no responda.
   Se sigue editando a mano (o desde `/admin` más adelante).
 - `data/componentes.json` — solo un catálogo de nombres (Aplicación, Agenda, Finanzas...), para
   poder decir "esta novedad afectó a Finanzas" dentro de una entrada. Ya no tiene un estado propio.
+- `data/divisiones.json` — catálogo de las divisiones de Pahlass (Education, Salud, Retail...).
+  Se muestran como filtro en la columna izquierda de la página; cada entrada de la bitácora puede
+  traer una sola división en `div` (o ninguna, si es un anuncio de toda la empresa). Distinto de
+  `componentes.json`: una división es de negocio, un componente es un módulo dentro de un producto.
 - `data/estado-global.json` — **el estado real de Newton en su conjunto**, un solo valor
   (op/deg/caido/mant), NO por componente. Lo escribe automáticamente
   `scripts/actualizar-estado.mjs`, corrido cada 5 minutos por
