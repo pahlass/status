@@ -87,6 +87,14 @@ html[data-theme="light"] .mk img{filter:none}
 .pe-m span{display:block;margin-top:4px}
 @media (max-width:900px){ .pe-m{padding-left:0} }
 
+.hist-l{display:flex;justify-content:space-between;margin-bottom:6px}
+.hist{display:flex;gap:1.5px;height:36px}
+.hist i{flex:1;min-width:2px;position:relative;background:var(--ok);opacity:.22;transition:.1s}
+.hist i.caido{background:var(--mal);opacity:1}
+.hist i:hover{opacity:1;z-index:4;outline:1px solid var(--tx)}
+.hist i:hover::after{content:attr(data-t);position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);white-space:nowrap;padding:5px 8px;font:11px/1.4 var(--mo);
+  background:var(--tx);color:var(--bg);z-index:9;pointer-events:none}
 .pe-b{display:flex;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--ln)}
 .pe-b .bt{flex:1;text-align:center}
 .pe-n{margin-top:18px;padding-top:16px;border-top:1px solid var(--ln)}
@@ -191,8 +199,7 @@ html[data-theme="light"] .mk img{filter:none}
     <span class="sp"></span>
     <span class="l" id="anio"></span>
   </div>
-  <p>Esta página está alojada fuera de la infraestructura de Pahlass (GitHub Pages, no Railway/Supabase).
-    Sigue funcionando aunque la plataforma no responda.</p>
+  <p><b style="color:var(--tx);font-weight:500">Status Pahlass</b> sigue funcionando aunque la plataforma no responda.</p>
 </div></footer>
 
 <div class="sr" id="sr" hidden></div>
@@ -220,7 +227,19 @@ const TIPO={
   prensa:  {n:'Prensa',   c:''},
 };
 
-let COMP=[], E=[], GLOBAL=null;
+let COMP=[], E=[], GLOBAL=null, HISTORIAL=[];
+
+// "Última comprobación" en vivo, como el propio dashboard de UptimeRobot
+// ("1m, 19s ago") — se recalcula cada segundo sin volver a pedir datos.
+function haceVivo(iso){
+  if(!iso) return 'sin datos aún';
+  const s=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/1000));
+  if(s<60) return `hace ${s}s`;
+  const m=Math.floor(s/60), rs=s%60;
+  if(m<60) return `hace ${m}m ${rs}s`;
+  const h=Math.floor(m/60), rm=m%60;
+  return `hace ${h}h ${rm}m`;
+}
 
 /* ════════ UTILIDADES ════════ */
 const el=id=>document.getElementById(id);
@@ -259,11 +278,15 @@ const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
   ['avance','Avances'],['aviso','Avisos'],['prensa','Prensa']];
 
 /* ════════ LADO DERECHO ════════ */
+function fechaCorta(iso){const d=new Date(iso+'T12:00:00');return `${d.getDate()} ${MS[d.getMonth()]}`;}
 function pintaLado(){
   const g=gl(), act=E.filter(e=>e.t==='estado'&&e.abierto);
   const g90=GLOBAL?.uptime?.dias90, uptime90=g90!=null&&g90!==''?Number(g90).toFixed(2):'—';
   const tr=GLOBAL?.tiempoRespuestaMs!=null?`${GLOBAL.tiempoRespuestaMs} ms`:'—';
-  const ultima=GLOBAL?.actualizado?hace(new Date(GLOBAL.actualizado)):'sin datos aún';
+  const hist=HISTORIAL.map(d=>{
+    const t=d.estado==='op'?`${fechaCorta(d.fecha)} — sin caídas`:`${fechaCorta(d.fecha)} — caído ${d.minutosCaido} min`;
+    return `<i class="${d.estado==='op'?'':'caido'}" data-t="${esc(t)}"></i>`;
+  }).join('');
   el('lado').innerHTML=`
   <div class="pe">
     <div class="pe-t"><span class="pe-s ${g.c}"></span><h2>${g.t}</h2></div>
@@ -273,6 +296,9 @@ function pintaLado(){
       <div><b>${act.length}</b><span class="l">Abiertos</span></div>
     </div>
   </div>
+  ${HISTORIAL.length?`
+  <div class="hist-l"><span class="l">Historial · 90 días</span><span class="l">${fechaCorta(HISTORIAL[0].fecha)} — hoy</span></div>
+  <div class="hist">${hist}</div>`:''}
   <div class="pe-b">
     <button class="bt ll" data-sus>Avisos</button>
     <button class="bt" data-rss>Canales</button>
@@ -280,8 +306,9 @@ function pintaLado(){
   <div class="pe-n">
     <span class="l">Cómo se mide</span>
     <p>UptimeRobot revisa <b style="color:var(--tx);font-weight:400">app.pahlass.com</b> cada 5 minutos.
-      Última comprobación: ${esc(ultima)}. El detalle de qué módulo se vio afectado (Finanzas, Agenda...)
-      se sigue reportando a mano en cada incidente de la bitácora.</p>
+      Última comprobación: <b id="ultimoCheck" style="color:var(--tx);font-weight:400">${esc(haceVivo(GLOBAL?.actualizado))}</b>.
+      El detalle de qué módulo se vio afectado (Finanzas, Agenda...) se sigue reportando a mano en cada
+      incidente de la bitácora.</p>
   </div>`;
   el('hdE').className=`hd-e ${g.c}`;
   el('hdE').innerHTML=`<i></i><b>${g.t}</b>`;
@@ -393,13 +420,15 @@ document.addEventListener('click',ev=>{
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!el('sr').hidden) cierra();});
 
 async function cargar(){
-  const [compRes, entRes, globalRes] = await Promise.all([
+  const [compRes, entRes, globalRes, histRes] = await Promise.all([
     fetch('data/componentes.json').then(r=>r.json()),
     fetch('data/entradas.json').then(r=>r.json()),
     fetch('data/estado-global.json').then(r=>r.json()).catch(()=>null),
+    fetch('data/historial.json').then(r=>r.json()).catch(()=>[]),
   ]);
   COMP = compRes;
   GLOBAL = globalRes;
+  HISTORIAL = histRes;
   E = entRes.map(e=>({
     ...e,
     f: new Date(e.f),
@@ -414,7 +443,16 @@ async function cargar(){
   try{t=localStorage.getItem('bt.t')||'dark';}catch(_){}
   document.documentElement.setAttribute('data-theme',t);
   el('anio').textContent=`© ${HOY.getFullYear()} Pahlass`;
-  cargar().then(pinta).catch(()=>{ el('feed').innerHTML='<div class="vc">No se pudo cargar la bitácora. Intenta recargar la página.</div>'; });
+  cargar().then(pinta).then(()=>{
+    // El reloj de "última comprobación" late cada segundo, y cada 60s se
+    // vuelve a pedir data/estado-global.json (lo reescribe UptimeRobot vía
+    // GitHub Action cada 5 min) para que la página se sienta viva sin que
+    // alguien tenga que recargarla.
+    setInterval(()=>{ const e=el('ultimoCheck'); if(e) e.textContent=haceVivo(GLOBAL?.actualizado); },1000);
+    setInterval(()=>{
+      fetch('data/estado-global.json',{cache:'no-store'}).then(r=>r.json()).then(g=>{ GLOBAL=g; pintaLado(); }).catch(()=>{});
+    },60000);
+  }).catch(()=>{ el('feed').innerHTML='<div class="vc">No se pudo cargar la bitácora. Intenta recargar la página.</div>'; });
 })();
 </script>
 </body>
