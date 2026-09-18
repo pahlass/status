@@ -25,9 +25,14 @@ const esc = (s) => String(s ?? "").replace(/[&<>]/g, (m) => ({ "&": "&amp;", "<"
 const rfc822 = (iso) => new Date(iso).toUTCString();
 
 function rss(titulo, descripcion, ruta, filas) {
+  // Empate de fecha (mismo día) se rompe con la posición original en el
+  // arreglo — entradas.json crece agregando al final, así que la más
+  // nueva del mismo día es la que está más abajo (mismo criterio que
+  // index.html).
   const items = filas
-    .slice()
-    .sort((a, b) => new Date(b.f) - new Date(a.f))
+    .map((e, i) => ({ e, i }))
+    .sort((a, b) => new Date(b.e.f) - new Date(a.e.f) || b.i - a.i)
+    .map(({ e }) => e)
     .map(
       (e) => `  <item>
     <title>${esc(e.ti)}</title>

@@ -4,6 +4,13 @@
   <link>https://status.pahlass.com/</link>
   <description>Estado, novedades, avances y avisos de Pahlass.</description>
   <item>
+    <title>Un maestro ya puede ser titular de dos grupos</title>
+    <link>https://status.pahlass.com/#002</link>
+    <guid isPermaLink="false">002</guid>
+    <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[Antes, asignar a un maestro como titular de un segundo grupo le quitaba el primero sin avisar. Ya se puede tener más de uno.]]></description>
+  </item>
+  <item>
     <title>Esta página nace</title>
     <link>https://status.pahlass.com/#001</link>
     <guid isPermaLink="false">001</guid>

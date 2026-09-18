@@ -1,5 +1,5 @@
 [
-  { "k": "education", "n": "Pahlass Education" },
-  { "k": "salud", "n": "Pahlass Salud" },
-  { "k": "retail", "n": "Pahlass Retail" }
+  { "k": "education", "n": "Pahlass Education", "c": "morado" },
+  { "k": "salud", "n": "Pahlass Salud", "c": "verdeagua" },
+  { "k": "retail", "n": "Pahlass Retail", "c": "naranja" }
 ]

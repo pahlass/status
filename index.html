@@ -16,6 +16,13 @@
   --bg:#0D0E10; --bg2:#141619; --tx:#EFEFEF; --tx2:#A8ACB2; --tx3:#6E737A;
   --ln:#1F2226; --ln2:#2E3238;
   --ok:#5E9268; --rie:#AD8A45; --mal:#A35A5A; --az:#5F7CA3;
+  /* Colores de división (data/divisiones.json, campo "c") — un color fijo
+     por división, distinto de los semánticos de arriba (esos significan
+     estado/severidad, no a quién pertenece la publicación), para que
+     "Pahlass Education" se distinga de "Pahlass Salud"/"Pahlass Retail"
+     de un vistazo, tanto en la columna de la izquierda como en el chip
+     que trae cada publicación. */
+  --dv-morado:#9B7FD1; --dv-verdeagua:#4FA6A0; --dv-naranja:#C97C42;
   --ui:'Inter Tight',system-ui,-apple-system,sans-serif;
   --mo:'JetBrains Mono',ui-monospace,monospace;
   --w:1120px;
@@ -24,6 +31,7 @@ html[data-theme="light"]{
   --bg:#FFFFFF; --bg2:#FAFAFA; --tx:#16181B; --tx2:#54585E; --tx3:#8B9098;
   --ln:#E8EAEC; --ln2:#D3D6DA;
   --ok:#3F7A4C; --rie:#8A6A26; --mal:#8F4242; --az:#3F5F8C;
+  --dv-morado:#6E4FAE; --dv-verdeagua:#2C7A73; --dv-naranja:#9C5423;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--ui);
@@ -82,10 +90,12 @@ html[data-theme="light"] .mk img{filter:none}
 /* ── divisiones (izquierda) ── */
 .dv-t{display:block;margin-bottom:11px}
 .dv{display:flex;flex-direction:column;gap:2px}
-.dv button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;
+.dv button{display:flex;align-items:center;gap:8px;width:100%;
   font:12.5px/1.5 var(--ui);color:var(--tx2);padding:7px 9px;border-left:2px solid transparent;transition:.14s}
 .dv button:hover{color:var(--tx);background:var(--bg2)}
 .dv button[aria-current="true"]{color:var(--tx);border-left-color:var(--tx);background:var(--bg2);font-weight:500}
+.dv button i{width:6px;height:6px;flex:none;display:block}
+.dv button span:first-of-type{flex:1}
 .dv button span:last-child{font-family:var(--mo);font-size:11px;color:var(--tx3)}
 @media (max-width:900px){
   .dv{flex-direction:row;flex-wrap:wrap;gap:8px}
@@ -314,6 +324,7 @@ const fc=f=>`${String(f.getDate()).padStart(2,'0')} ${MS[f.getMonth()]} ${f.getF
 const fd=f=>`${String(f.getDate()).padStart(2,'0')} ${MS[f.getMonth()]} ${f.getFullYear()}`;
 const nc=k=>(COMP.find(c=>c.k===k)||{n:k}).n;
 const nd=k=>(DIVS.find(d=>d.k===k)||{n:k}).n;
+const cd=k=>{const d=DIVS.find(d=>d.k===k); return d&&d.c?`var(--dv-${d.c})`:'var(--tx3)';};
 function hace(f){const m=Math.round((HOY-f)/60000);
   if(m<1) return 'justo ahora';
   if(m<60) return `hace ${m} min`;
@@ -347,7 +358,7 @@ function pintaDivisiones(){
   el('divs').innerHTML=`
     <span class="l dv-t">Divisiones</span>
     <div class="dv">${filas.map(([k,n,c])=>
-      `<button data-d="${esc(k)}" aria-current="${division===k}"><span>${esc(n)}</span><span>${c}</span></button>`
+      `<button data-d="${esc(k)}" aria-current="${division===k}"><i style="background:${cd(k)}"></i><span>${esc(n)}</span><span>${c}</span></button>`
     ).join('')}</div>`;
 }
 
@@ -407,7 +418,7 @@ function entrada(e){
   return `<article class="en">
     <div class="en-h">
       <span class="en-k l ${T.c}"><i></i>${T.n}</span>
-      ${e.div?`<span class="l">${esc(nd(e.div))}</span>`:''}
+      ${e.div?`<span class="en-k l" style="color:${cd(e.div)}"><i style="background:${cd(e.div)}"></i>${esc(nd(e.div))}</span>`:''}
       <span class="l mn">${fd(e.f)}</span>
       ${esInc?`<span class="l">${e.abierto?FASE[e.upd[0].e].n:`Resuelto · ${dur(e.f,e.fin)}`}</span>`:''}
       <span class="l" style="opacity:.5">${esc(e.id)}</span>
@@ -521,13 +532,19 @@ async function cargar(){
   GLOBAL = globalRes;
   HISTORIAL = histRes;
   DIVS = divsRes;
-  E = entRes.map(e=>({
+  // Si dos entradas caen en la misma fecha (mismo día), la fecha sola no
+  // alcanza para saber cuál es más reciente — se desempata con la
+  // posición en el archivo: entradas.json crece agregando al final
+  // (ver admin/index.html, ENTRADAS.push), así que la más nueva del
+  // mismo día es la que está más abajo en el arreglo original.
+  E = entRes.map((e,i)=>({
     ...e,
+    _i: i,
     f: new Date(e.f),
     fin: e.fin ? new Date(e.fin) : null,
     comp: e.comp || [],
     upd: (e.upd||[]).map(u=>({...u, h:new Date(u.h)})),
-  })).sort((a,b)=>b.f-a.f);
+  })).sort((a,b)=>b.f-a.f || b._i-a._i);
 }
 
 (function(){
