@@ -294,6 +294,13 @@ el('form').addEventListener('submit', async ev=>{
     x: el('fX').value,
     comp: [...document.querySelectorAll('#form .ck-row input:checked')].map(c=>c.value),
     div: el('fDiv').value || null,
+    // Momento real de publicación (no el día que se le puso en "Fecha",
+    // que es solo la fecha editorial) — es lo que usa index.html para
+    // "hace X" y para desempatar el orden entre dos entradas del mismo
+    // día. Se pone una sola vez, al crear; si ya existía (se está
+    // editando), se conserva la original en vez de "adelantarla" cada
+    // vez que se corrige un texto.
+    ts: ENTRADAS.find(x=>x.id===el('fId').value.trim())?.ts || new Date().toISOString(),
   };
   if(tipo==='estado'){
     nueva.sev=el('fSev').value;

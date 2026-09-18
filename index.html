@@ -352,7 +352,7 @@ function cuerpo(t){let o='',b=[];
     else {v(); o+=`<p>${esc(s)}</p>`;}});
   v(); return o;}
 
-let filtro='todo', ex=null, division='todas';
+let filtro='todo', ex=null, division='todas', soloUno=null;
 const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
   ['avance','Avances'],['aviso','Avisos'],['prensa','Prensa']];
 
@@ -437,12 +437,23 @@ function entrada(e){
     <div class="en-p">
       ${e.comp.length?`<span class="l">Afecta a ${e.comp.map(nc).join(', ')}</span>`:''}
       <span class="sp"></span>
-      <span class="l" style="opacity:.5">${hace(e.f)}</span>
+      <span class="l" style="opacity:.5">${hace(e.ts||e.f)}</span>
       <button data-e="${esc(e.id)}">${a?'Ocultar':esInc?'Actualizaciones':'Leer más'}</button>
     </div>
   </article>`;
 }
 function pintaFeed(){
+  // Enlace directo (#e-<id>): se aísla esa publicación sola, sin el
+  // resto del feed ni las pestañas de filtro (que no aplican aquí) —
+  // "volver" limpia el hash y abrirEnlaceDirecto() restaura el feed
+  // completo (ver más abajo).
+  if(soloUno){
+    const e=E.find(x=>x.id===soloUno);
+    el('feed').innerHTML=`
+      <div class="ft"><button data-volver>← Ver toda la bitácora</button></div>
+      ${e?entrada(e):'<div class="vc">No se encontró esa publicación.</div>'}`;
+    return;
+  }
   const base=E.filter(e=>division==='todas'||e.div===division);
   const l=base.filter(e=>filtro==='todo'||e.t===filtro);
   const meses={};
@@ -462,20 +473,23 @@ function pinta(){ pintaDivisiones(); pintaLado(); pintaFeed(); }
 
 // Enlace directo a una publicación — así una notificación en el header de
 // Newton puede mandar a alguien a leerla completa aquí en vez de solo a la
-// portada: status.pahlass.com/#e-<id> (o #<id> a secas, por si acaso) la
-// abre ya expandida y hace scroll hasta ella. Se corre al cargar la página
-// y otra vez si el hash cambia sin recargar (mismo tab, otro enlace).
+// portada: status.pahlass.com/#e-<id> (o #<id> a secas, por si acaso)
+// muestra SOLO esa publicación, ya expandida — no el feed completo con
+// esa entrada nada más marcada. Se corre al cargar la página y otra vez
+// si el hash cambia sin recargar (mismo tab, "volver" o otro enlace).
 function abrirEnlaceDirecto(){
   const m=(location.hash||'').match(/^#e-(.+)$/) || (location.hash||'').match(/^#(.+)$/);
-  if(!m) return;
-  const id=decodeURIComponent(m[1]);
-  if(!E.some(x=>x.id===id)) return;
-  filtro='todo'; division='todas'; ex=id;
+  const id=m?decodeURIComponent(m[1]):null;
+  if(!id || !E.some(x=>x.id===id)){
+    // Hash vacío o que no es de ninguna entrada (se quitó el "#e-xxx",
+    // o alguien llegó sin hash) — si veníamos de la vista de una sola
+    // publicación, se vuelve al feed completo.
+    if(soloUno){ soloUno=null; ex=null; filtro='todo'; division='todas'; pintaDivisiones(); pintaFeed(); }
+    return;
+  }
+  soloUno=id; ex=id;
   pintaDivisiones(); pintaFeed();
-  requestAnimationFrame(()=>{
-    const nodo=document.getElementById('e-'+id);
-    if(nodo) nodo.scrollIntoView({behavior:'smooth', block:'start'});
-  });
+  window.scrollTo(0,0);
 }
 
 /* ════════ INTERACCIÓN ════════ */
@@ -532,8 +546,18 @@ document.addEventListener('click',ev=>{
   const db=t.closest('[data-d]'); if(db){division=db.dataset.d; filtro='todo'; ex=null;
     try{window.scrollTo(0,0);}catch(_){} pintaDivisiones(); return pintaFeed();}
   const eb=t.closest('[data-e]'); if(eb){ex=ex===eb.dataset.e?null:eb.dataset.e; return pintaFeed();}
-  if(t.closest('[data-top]')){ filtro='todo'; ex=null; division='todas'; try{window.scrollTo(0,0);}catch(_){}
-    return pinta(); }
+  if(t.closest('[data-volver]')){
+    // Quita el "#e-xxx" del URL — abrirEnlaceDirecto() (colgado del
+    // evento hashchange) es quien de verdad restaura el feed completo.
+    history.pushState('', document.title, location.pathname + location.search);
+    return abrirEnlaceDirecto();
+  }
+  if(t.closest('[data-top]')){
+    filtro='todo'; ex=null; division='todas'; soloUno=null;
+    if(location.hash) history.pushState('', document.title, location.pathname + location.search);
+    try{window.scrollTo(0,0);}catch(_){}
+    return pinta();
+  }
   if(t.closest('#tema')){
     const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
     document.documentElement.setAttribute('data-theme',n);
@@ -565,14 +589,23 @@ async function cargar(){
     // "YYYY-MM-DD" a secas lo interpreta el navegador como medianoche
     // UTC, no local — en una zona detrás de UTC (México) esa medianoche
     // cae la tarde/noche del día ANTERIOR en hora local, y por eso se
-    // veía "17 de septiembre, hace 20h" con la fecha puesta en "18". Con
-    // la hora explícita (sin "Z") el navegador la interpreta en hora
-    // local, que es justo lo que significa una fecha sin hora aquí.
+    // veía "17 de septiembre" con la fecha puesta en "18". Con la hora
+    // explícita (sin "Z") el navegador la interpreta en hora local, que
+    // es justo lo que significa una fecha sin hora aquí. Sigue siendo
+    // solo la fecha editorial (el día que se le puso a la entrada), no
+    // el momento real de publicación — para eso está "ts" abajo.
     f: new Date(e.f + 'T00:00:00'),
+    // Momento real en que se publicó (admin/index.html lo pone al crear
+    // y lo conserva al editar) — de ahí sale "hace X", no de "f": "f" es
+    // solo un día, así que "hace X" contado desde su medianoche decía
+    // disparates como "hace 13h" en una entrada publicada hace 2
+    // minutos. Entradas de antes de este cambio no lo tienen — se cae a
+    // "f" para esas nada más.
+    ts: e.ts ? new Date(e.ts) : null,
     fin: e.fin ? new Date(e.fin) : null,
     comp: e.comp || [],
     upd: (e.upd||[]).map(u=>({...u, h:new Date(u.h)})),
-  })).sort((a,b)=>b.f-a.f || b._i-a._i);
+  })).sort((a,b)=>(b.ts||b.f)-(a.ts||a.f) || b._i-a._i);
 }
 
 (function(){
