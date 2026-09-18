@@ -100,9 +100,9 @@ html[data-theme="light"] .mk img{filter:none}
 .spark-l{display:flex;justify-content:space-between;margin-top:5px}
 .od{display:flex;align-items:baseline;justify-content:space-between;padding:11px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);margin:18px 0}
 .od b{font-family:var(--mo);font-size:13px;font-weight:400;color:var(--tx)}
-.hist-l{display:flex;justify-content:space-between;margin-bottom:6px}
-.hist{display:flex;gap:1.5px;height:36px}
-.hist i{flex:1;min-width:2px;position:relative;background:var(--ok);opacity:.22;transition:.1s}
+.hist-l{display:flex;justify-content:space-between}
+.hist{display:flex;gap:1.5px;height:36px;margin:6px 0}
+.hist i{flex:1;min-width:2px;position:relative;background:var(--ok);opacity:.65;transition:.1s}
 .hist i.caido{background:var(--mal);opacity:1}
 .hist i:hover{opacity:1;z-index:4;outline:1px solid var(--tx)}
 .hist i:hover::after{content:attr(data-t);position:absolute;bottom:calc(100% + 6px);left:50%;
@@ -348,8 +348,9 @@ function pintaLado(){
   ${GLOBAL?.estado==='op'&&GLOBAL?.operativoDesde?`
   <div class="od"><span class="l">Operativo desde hace</span><b id="operativoDesde">${esc(duracionDesde(GLOBAL.operativoDesde))}</b></div>`:''}
   ${HISTORIAL.length?`
-  <div class="hist-l"><span class="l">Historial · 90 días</span><span class="l">${fechaCorta(HISTORIAL[0].fecha)} — hoy</span></div>
-  <div class="hist">${hist}</div>`:''}
+  <span class="l">Historial · 90 días</span>
+  <div class="hist">${hist}</div>
+  <div class="hist-l"><span class="l">Hace 90 días (${fechaCorta(HISTORIAL[0].fecha)})</span><span class="l">Hoy</span></div>`:''}
   <div class="pe-b">
     <button class="bt ll" data-sus>Avisos</button>
     <button class="bt" data-rss>Canales</button>
