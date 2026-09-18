@@ -21,8 +21,12 @@
      estado/severidad, no a quién pertenece la publicación), para que
      "Pahlass Education" se distinga de "Pahlass Salud"/"Pahlass Retail"
      de un vistazo, tanto en la columna de la izquierda como en el chip
-     que trae cada publicación. */
-  --dv-morado:#9B7FD1; --dv-verdeagua:#4FA6A0; --dv-naranja:#C97C42;
+     que trae cada publicación. "education" usa el mismo índigo #4F46E5
+     que ya identifica a "Modelo escolar"/Educación dentro de Newton
+     (COLOR_MODELO en perfiles-docentes/tabla-docentes.tsx y afines) — no
+     un color inventado — y por eso NO cambia entre tema claro/oscuro,
+     es un color de marca fijo, igual que allá. */
+  --dv-indigo:#4F46E5; --dv-verdeagua:#4FA6A0; --dv-naranja:#C97C42;
   --ui:'Inter Tight',system-ui,-apple-system,sans-serif;
   --mo:'JetBrains Mono',ui-monospace,monospace;
   --w:1120px;
@@ -149,7 +153,7 @@ html[data-theme="light"] .mk img{filter:none}
 .ft button:hover{color:var(--tx)}
 .ft button[aria-current="true"]{color:var(--tx);border-bottom-color:var(--tx)}
 
-.en{padding:26px 0;border-bottom:1px solid var(--ln)}
+.en{padding:26px 0;border-bottom:1px solid var(--ln);scroll-margin-top:76px}
 .en-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
 .en-k{display:inline-flex;align-items:center;gap:7px}
 .en-k i{width:6px;height:6px;display:block;background:var(--tx3)}
@@ -415,13 +419,13 @@ function pintaLado(){
 function entrada(e){
   const T=TIPO[e.t], a=ex===e.id;
   const esInc=e.t==='estado';
-  return `<article class="en">
+  return `<article class="en" id="e-${esc(e.id)}">
     <div class="en-h">
       <span class="en-k l ${T.c}"><i></i>${T.n}</span>
       ${e.div?`<span class="en-k l" style="color:${cd(e.div)}"><i style="background:${cd(e.div)}"></i>${esc(nd(e.div))}</span>`:''}
       <span class="l mn">${fd(e.f)}</span>
       ${esInc?`<span class="l">${e.abierto?FASE[e.upd[0].e].n:`Resuelto · ${dur(e.f,e.fin)}`}</span>`:''}
-      <span class="l" style="opacity:.5">${esc(e.id)}</span>
+      <a href="#e-${esc(e.id)}" data-e="${esc(e.id)}" class="l" style="opacity:.5" title="Enlace directo a esta publicación">${esc(e.id)}</a>
     </div>
     <h3>${esc(e.ti)}</h3>
     <p class="rs">${esc(e.rs)}</p>
@@ -455,6 +459,24 @@ function pintaFeed(){
       :`<div class="vc">Sin entradas de ese tipo.</div>`}`;
 }
 function pinta(){ pintaDivisiones(); pintaLado(); pintaFeed(); }
+
+// Enlace directo a una publicación — así una notificación en el header de
+// Newton puede mandar a alguien a leerla completa aquí en vez de solo a la
+// portada: status.pahlass.com/#e-<id> (o #<id> a secas, por si acaso) la
+// abre ya expandida y hace scroll hasta ella. Se corre al cargar la página
+// y otra vez si el hash cambia sin recargar (mismo tab, otro enlace).
+function abrirEnlaceDirecto(){
+  const m=(location.hash||'').match(/^#e-(.+)$/) || (location.hash||'').match(/^#(.+)$/);
+  if(!m) return;
+  const id=decodeURIComponent(m[1]);
+  if(!E.some(x=>x.id===id)) return;
+  filtro='todo'; division='todas'; ex=id;
+  pintaDivisiones(); pintaFeed();
+  requestAnimationFrame(()=>{
+    const nodo=document.getElementById('e-'+id);
+    if(nodo) nodo.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+}
 
 /* ════════ INTERACCIÓN ════════ */
 const X=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
@@ -540,7 +562,13 @@ async function cargar(){
   E = entRes.map((e,i)=>({
     ...e,
     _i: i,
-    f: new Date(e.f),
+    // "YYYY-MM-DD" a secas lo interpreta el navegador como medianoche
+    // UTC, no local — en una zona detrás de UTC (México) esa medianoche
+    // cae la tarde/noche del día ANTERIOR en hora local, y por eso se
+    // veía "17 de septiembre, hace 20h" con la fecha puesta en "18". Con
+    // la hora explícita (sin "Z") el navegador la interpreta en hora
+    // local, que es justo lo que significa una fecha sin hora aquí.
+    f: new Date(e.f + 'T00:00:00'),
     fin: e.fin ? new Date(e.fin) : null,
     comp: e.comp || [],
     upd: (e.upd||[]).map(u=>({...u, h:new Date(u.h)})),
@@ -553,6 +581,8 @@ async function cargar(){
   document.documentElement.setAttribute('data-theme',t);
   el('anio').textContent=`© ${HOY.getFullYear()} Pahlass`;
   cargar().then(pinta).then(()=>{
+    abrirEnlaceDirecto();
+    window.addEventListener('hashchange', abrirEnlaceDirecto);
     // El reloj de "última comprobación" late cada segundo, y cada 60s se
     // vuelve a pedir data/estado-global.json (lo reescribe UptimeRobot vía
     // GitHub Action cada 5 min) para que la página se sienta viva sin que
