@@ -4,6 +4,13 @@
   <link>https://status.pahlass.com/</link>
   <description>Estado, novedades, avances y avisos de Pahlass.</description>
   <item>
+    <title>Logo del Negocio, y ajustes de interfaz</title>
+    <link>https://status.pahlass.com/#003</link>
+    <guid isPermaLink="false">003</guid>
+    <pubDate>Sat, 19 Sep 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[Cualquier Negocio ya puede subir su propio logo en Inicio. También se corrigieron algunos "bugs" de interfaz]]></description>
+  </item>
+  <item>
     <title>Un maestro ya puede ser titular de dos grupos</title>
     <link>https://status.pahlass.com/#002</link>
     <guid isPermaLink="false">002</guid>
