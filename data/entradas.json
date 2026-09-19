@@ -19,5 +19,16 @@
     "comp": [],
     "div": "education",
     "ts": "2026-09-18T20:27:47.243Z"
+  },
+  {
+    "id": "003",
+    "t": "novedad",
+    "f": "2026-09-19",
+    "ti": "Logo del Negocio, y ajustes de interfaz",
+    "rs": "Cualquier Negocio ya puede subir su propio logo en Inicio. También se corrigieron algunos \"bugs\" de interfaz",
+    "x": "Se agregó un botón para que el Negocio suba su propio logo desde Inicio, en el cuadro donde antes solo se mostraban las iniciales del nombre. Se sube dando clic ahí mismo y reemplaza las iniciales de inmediato.\n\nTambién se corrigieron dos detalles de interfaz:\n\n— En Registros → Alumnos, el ícono de la lupa del buscador aparecía encimado sobre el texto \"Buscar nombre o matrícula\". Ya tiene su propio espacio.\n\n— El menú de perfil (abajo del sidebar, con Tema, Sidebar Control, Cambiar contraseña y Cerrar sesión) se quedaba abierto aunque se moviera el mouse fuera de él. Ahora se cierra solo al salir.",
+    "comp": [],
+    "div": null,
+    "ts": "2026-09-19T00:14:27.468Z"
   }
 ]
