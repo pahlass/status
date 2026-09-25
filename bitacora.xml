@@ -4,6 +4,13 @@
   <link>https://status.pahlass.com/</link>
   <description>Estado, novedades, avances y avisos de Pahlass.</description>
   <item>
+    <title>Mantenimiento: roles, accesos y versión móvil</title>
+    <link>https://status.pahlass.com/#INC-01</link>
+    <guid isPermaLink="false">INC-01</guid>
+    <pubDate>Fri, 25 Sep 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[Estamos ajustando roles y permisos de acceso.]]></description>
+  </item>
+  <item>
     <title>Logo del Negocio, y ajustes de interfaz</title>
     <link>https://status.pahlass.com/#003</link>
     <guid isPermaLink="false">003</guid>

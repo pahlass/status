@@ -1,9 +1,18 @@
 {
-  "actualizado": "2026-09-25T18:55:57.190Z",
+  "actualizado": "2026-09-25T20:50:25.449Z",
   "global": {
     "estado": "op",
     "uptime90d": "99.984",
     "medidoPor": "UptimeRobot"
   },
-  "incidentesAbiertos": []
+  "incidentesAbiertos": [
+    {
+      "id": "INC-01",
+      "titulo": "Mantenimiento: roles, accesos y versión móvil",
+      "severidad": "mant",
+      "componentes": [],
+      "desde": "2026-09-25",
+      "faseActual": "monitoreando"
+    }
+  ]
 }

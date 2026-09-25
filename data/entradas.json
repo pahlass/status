@@ -30,5 +30,25 @@
     "comp": [],
     "div": null,
     "ts": "2026-09-19T00:14:27.468Z"
+  },
+  {
+    "id": "INC-01",
+    "t": "estado",
+    "f": "2026-09-25",
+    "ti": "Mantenimiento: roles, accesos y versión móvil",
+    "rs": "Estamos ajustando roles y permisos de acceso.",
+    "x": "Estamos trabajando y mejorando la experiencia de Pahlass en teléfono. Es posible que veas cambios menores en la navegación durante estos días.",
+    "comp": [],
+    "div": "education",
+    "ts": "2026-09-25T20:50:25.357Z",
+    "sev": "mant",
+    "abierto": true,
+    "upd": [
+      {
+        "h": "2026-09-25T20:50:25.357Z",
+        "e": "monitoreando",
+        "x": "Estamos trabajando y mejorando la experiencia de Pahlass en teléfono. Es posible que veas cambios menores en la navegación durante estos días."
+      }
+    ]
   }
 ]
