@@ -50,14 +50,5 @@ guarda solo en tu navegador).
 
 ## Bitácora interna de cambios (`/bitacora`)
 
-`status.pahlass.com/bitacora/` es una bitácora **privada** para el equipo: proyectos, cambios
-pedidos, cómo se hicieron y si se lograron (con su historial). Solo la **interfaz** vive en este
-repo (que es público); los **datos** viven en `bitacora/datos.json` dentro del repo **privado**
-`pahlass/Core-Pahlass`. Sin un token con acceso a ese repo, la página no muestra nada.
-
-- Para entrar: token fine-grained de GitHub (resource owner `pahlass`, solo el repo
-  `Core-Pahlass`, Contents → Read and write). Se guarda solo en el navegador.
-- Para dar acceso a alguien del equipo: agrégalo como colaborador de `pahlass/Core-Pahlass`
-  y que genere su propio token.
-- Cada acción es un commit en ese repo, con quién la hizo — el historial completo queda en GitHub.
-- La página tiene `noindex`, pero eso no la hace privada: lo privado son los datos.
+Se mudó a **core.pahlass.com/bitacora/** (repo privado `pahlass/Core-Pahlass`, publicado con
+Cloudflare Pages). Aquí solo queda `bitacora/index.html` como redirección para los enlaces viejos.
