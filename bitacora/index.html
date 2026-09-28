@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitácora de cambios</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#FAFAFB; --sup:#FFFFFF; --hover:#F4F5F7; --hover2:#ECEDF0;
+  --tinta:#1B1D22; --tinta2:#50555F; --tenue:#8A8F99; --linea:#EAEBEE; --linea2:#DCDEE3;
+  --ok:#3E8A62; --ok-s:#EEF6F1; --pro:#A87B35; --pro-s:#F8F2E8; --no:#B85C62; --no-s:#F8EEEF;
+  --marca:#5563C1; --marca-s:#EEF0F9;
+  --ui:'Geist',system-ui,-apple-system,sans-serif; --mo:'Geist Mono',ui-monospace,monospace;
+}
+html[data-tema="oscuro"]{
+  --papel:#0F1115; --sup:#15171C; --hover:#1C1F26; --hover2:#23262E;
+  --tinta:#E8EAEE; --tinta2:#A9AEB8; --tenue:#737985; --linea:#23262D; --linea2:#2E323A;
+  --ok:#6DB38C; --ok-s:#17261E; --pro:#C9A064; --pro-s:#2A2319; --no:#D98A90; --no-s:#2C1C1E;
+  --marca:#8793E0; --marca-s:#1E2238;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--papel);color:var(--tinta);font:400 13.5px/1.55 var(--ui);
+  -webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--marca);outline-offset:2px}
+.num{font-family:var(--mo);font-variant-numeric:tabular-nums}
+svg{display:block;flex:none}
+
+.app{display:grid;grid-template-columns:260px 1fr;height:100vh;height:100dvh}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%}
+.app{height:100%}
+
+/* lateral */
+.lat{background:var(--sup);border-right:1px solid var(--linea);display:flex;flex-direction:column;min-height:0}
+.lat-h{display:flex;align-items:center;gap:10px;padding:16px 16px 12px}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--tinta);color:var(--sup);display:grid;place-items:center}
+.lat-h b{font-weight:500;font-size:14px}
+.lat-h span{font-size:12px;color:var(--tenue);display:block;margin-top:-1px}
+.lat-t{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 6px;font-size:12px;color:var(--tenue)}
+.lat-t button{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;color:var(--tinta2)}
+.lat-t button:hover{background:var(--hover);color:var(--tinta)}
+.proys{flex:1;overflow-y:auto;padding:0 10px 10px}
+.pry{display:block;width:100%;text-align:left;padding:9px 10px;border-radius:7px;transition:background .12s;position:relative}
+.pry:hover{background:var(--hover)}
+.pry[aria-current="true"]{background:var(--hover)}
+.pry[aria-current="true"]::before{content:"";position:absolute;left:-10px;top:10px;bottom:10px;width:2px;border-radius:2px;background:var(--marca)}
+.pry-n{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tinta2)}
+.pry[aria-current="true"] .pry-n{color:var(--tinta);font-weight:500}
+.pry-n span:first-child{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pry-n .num{font-size:11px;color:var(--tenue)}
+.pry-b{height:3px;border-radius:2px;background:var(--hover2);margin-top:8px;overflow:hidden;display:flex}
+.pry-b i{display:block;height:100%}
+.lat-p{border-top:1px solid var(--linea);padding:10px 16px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tenue)}
+.lat-p .pt{width:6px;height:6px;border-radius:50%;background:var(--tenue)}
+.lat-p .pt.on{background:var(--ok)}
+.lat-p .sp{flex:1}
+.icb{width:30px;height:30px;border-radius:6px;display:grid;place-items:center;color:var(--tinta2)}
+.icb:hover{background:var(--hover);color:var(--tinta)}
+.icb[hidden]{display:none}
+
+/* contenido */
+.cont{display:flex;flex-direction:column;min-width:0;min-height:0}
+.sup{height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 28px;background:var(--sup);
+  border-bottom:1px solid var(--linea)}
+.migas{font-size:13px;color:var(--tenue);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.migas b{color:var(--tinta);font-weight:500}
+.esp{flex:1}
+main{flex:1;overflow-y:auto;padding:28px 32px 70px}
+.pag{max-width:1040px;margin:0 auto}
+
+.cab{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;padding-bottom:20px;margin-bottom:22px;border-bottom:1px solid var(--linea)}
+.cab h1{margin:0;font-size:21px;font-weight:500;letter-spacing:-.015em}
+.cab p{margin:4px 0 0;color:var(--tenue);font-size:13px;max-width:62ch}
+.cab .acc{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+.bt{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:6px;font-size:13px;font-weight:500;
+  border:1px solid var(--linea2);background:var(--sup);color:var(--tinta);transition:.13s;white-space:nowrap}
+.bt:hover{background:var(--hover)}
+.bt.pr{background:var(--tinta);border-color:var(--tinta);color:var(--sup)}
+.bt.pr:hover{opacity:.86}
+.bt.pel{color:var(--no)}
+.bt.pel:hover{background:var(--no-s);border-color:var(--no)}
+.bt:disabled{opacity:.45;cursor:default}
+
+/* indicadores */
+.kp{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--linea);border-radius:8px;background:var(--sup);overflow:hidden}
+.k{padding:16px 18px;border-right:1px solid var(--linea)}
+.k:last-child{border-right:0}
+.k span{font-size:12.5px;color:var(--tenue);display:flex;align-items:center;gap:7px}
+.k b{display:block;font:400 25px/1.1 var(--ui);letter-spacing:-.02em;margin-top:8px}
+.prog{display:flex;align-items:center;gap:12px;margin:14px 0 24px;font-size:12.5px;color:var(--tenue)}
+.prog .bar{flex:1;height:6px;border-radius:3px;background:var(--hover2);display:flex;overflow:hidden}
+.prog .bar i{display:block;height:100%;transition:width .4s}
+
+/* pestañas y filtros */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--linea);margin-bottom:16px}
+.tab{padding:9px 12px;font-size:13px;color:var(--tenue);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--tinta)}
+.tab.on{color:var(--tinta);font-weight:500;border-bottom-color:var(--tinta)}
+.fil{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{padding:4px 10px;border-radius:5px;font-size:12.5px;color:var(--tinta2);border:1px solid transparent;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{background:var(--hover)}
+.chip.on{background:var(--hover);border-color:var(--linea2);color:var(--tinta);font-weight:500}
+.chip .num{font-size:11px;color:var(--tenue)}
+.busca{display:flex;align-items:center;gap:8px;margin-left:auto;padding:5px 10px;border-radius:6px;border:1px solid var(--linea);background:var(--sup);width:230px}
+.busca input{border:0;outline:none;background:none;width:100%;font-size:13px}
+.sel{padding:5px 8px;border-radius:6px;border:1px solid var(--linea);background:var(--sup);font-size:12.5px;color:var(--tinta2)}
+
+/* entrada */
+.ent{background:var(--sup);border:1px solid var(--linea);border-radius:8px;margin-bottom:10px;transition:border-color .15s}
+.ent:hover{border-color:var(--linea2)}
+.ent-h{display:flex;gap:14px;padding:15px 18px 12px;align-items:flex-start}
+.est-i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;margin-top:1px}
+.est-i.logrado{background:var(--ok-s);color:var(--ok)}
+.est-i.proceso{background:var(--pro-s);color:var(--pro)}
+.est-i.no{background:var(--no-s);color:var(--no)}
+.ent-t{flex:1;min-width:0}
+.ent-t h3{margin:0;font-size:14.5px;font-weight:500;letter-spacing:-.005em}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:4px;font-size:12px;color:var(--tenue)}
+.eti{padding:1px 7px;border-radius:4px;background:var(--hover);color:var(--tinta2);font-size:11.5px}
+.eti.alta{background:var(--no-s);color:var(--no)}
+.estados{display:flex;gap:4px;flex:none}
+.estados button{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:6px;font-size:12px;
+  border:1px solid var(--linea);color:var(--tenue);transition:.13s}
+.estados button:hover{border-color:var(--linea2);color:var(--tinta)}
+.estados button.on.logrado{background:var(--ok-s);border-color:var(--ok);color:var(--ok);font-weight:500}
+.estados button.on.proceso{background:var(--pro-s);border-color:var(--pro);color:var(--pro);font-weight:500}
+.estados button.on.no{background:var(--no-s);border-color:var(--no);color:var(--no);font-weight:500}
+.ent-b{padding:0 18px 14px 62px;display:grid;gap:10px}
+.bloque span{display:block;font-size:12px;color:var(--tenue);margin-bottom:3px}
+.bloque p{margin:0;white-space:pre-wrap;color:var(--tinta2);font-size:13.3px}
+.bloque p.vacio{color:var(--tenue);font-style:italic}
+.ent-f{display:flex;align-items:center;gap:6px;padding:9px 12px 9px 62px;border-top:1px solid var(--linea)}
+.lnk{font-size:12.5px;color:var(--tinta2);padding:4px 8px;border-radius:5px;display:inline-flex;align-items:center;gap:6px}
+.lnk:hover{background:var(--hover);color:var(--tinta)}
+.lnk.pel:hover{color:var(--no);background:var(--no-s)}
+.hist{padding:4px 18px 14px 62px}
+.ev{display:grid;grid-template-columns:14px 1fr;gap:10px;position:relative;padding-bottom:12px}
+.ev:not(:last-child)::before{content:"";position:absolute;left:6px;top:14px;bottom:0;width:1px;background:var(--linea2)}
+.ev i{width:13px;height:13px;border-radius:50%;margin-top:3px;border:2px solid var(--sup);box-shadow:0 0 0 1px var(--linea2);background:var(--tenue)}
+.ev i.logrado{background:var(--ok)} .ev i.proceso{background:var(--pro)} .ev i.no{background:var(--no)}
+.ev b{font-weight:500;font-size:13px}
+.ev time{font-size:12px;color:var(--tenue);margin-left:6px}
+.ev p{margin:2px 0 0;font-size:12.8px;color:var(--tinta2);white-space:pre-wrap}
+
+/* nota al cambiar estado */
+.nota-e{margin:0 18px 14px 62px;padding:12px;border-radius:8px;background:var(--hover);display:grid;gap:8px}
+.nota-e label{font-size:12.5px;color:var(--tinta2)}
+.nota-e textarea{width:100%;min-height:62px;resize:vertical;border:1px solid var(--linea2);border-radius:6px;padding:8px 10px;background:var(--sup);outline:none}
+.nota-e textarea:focus{border-color:var(--tenue)}
+.nota-e .acc{display:flex;gap:6px;justify-content:flex-end}
+
+/* línea de tiempo del proyecto */
+.dia{font-size:12px;color:var(--tenue);font-weight:500;margin:18px 0 10px}
+.dia:first-child{margin-top:0}
+.act{display:flex;gap:12px;padding:10px 14px;background:var(--sup);border:1px solid var(--linea);border-radius:8px;margin-bottom:6px;align-items:flex-start}
+.act .est-i{width:24px;height:24px}
+.act b{font-weight:500}
+.act span{color:var(--tenue);font-size:12.5px}
+.act p{margin:3px 0 0;color:var(--tinta2);font-size:12.8px;white-space:pre-wrap}
+.act time{margin-left:auto;font-size:12px;color:var(--tenue);flex:none}
+
+.vacia{text-align:center;padding:64px 20px;color:var(--tenue);border:1px dashed var(--linea2);border-radius:10px;background:var(--sup)}
+.vacia b{display:block;color:var(--tinta);font-weight:500;font-size:16px;margin-bottom:6px}
+.vacia p{margin:0 auto 18px;max-width:46ch}
+.cargando{padding:80px 20px;text-align:center;color:var(--tenue)}
+
+/* modal */
+.md{position:fixed;inset:0;background:rgba(20,22,28,.35);display:none;align-items:flex-start;justify-content:center;
+  padding:8vh 16px 16px;z-index:50;overflow-y:auto}
+.md.on{display:flex}
+.mb{width:min(600px,100%);background:var(--sup);border:1px solid var(--linea);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.14);animation:ent .16s ease-out}
+@keyframes ent{from{opacity:0;transform:translateY(-6px)}}
+.mb-h{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--linea)}
+.mb-h h2{margin:0;font-size:16px;font-weight:500;flex:1}
+.mb-b{padding:18px 20px;display:grid;gap:14px}
+.mb-f{display:flex;gap:8px;justify-content:flex-end;padding:14px 20px;border-top:1px solid var(--linea);align-items:center}
+.mb-f .ay{margin-right:auto;font-size:12px;color:var(--tenue)}
+.cp{display:grid;gap:5px}
+.cp label{font-size:12.5px;color:var(--tinta2)}
+.cp label i{color:var(--no);font-style:normal}
+.cp input,.cp select,.cp textarea{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--linea2);background:var(--sup);outline:none;font-size:13.5px}
+.cp textarea{min-height:84px;resize:vertical;line-height:1.5}
+.cp input:focus,.cp select:focus,.cp textarea:focus{border-color:var(--tenue)}
+.cp.err input,.cp.err textarea{border-color:var(--no)}
+.cp small{font-size:12px;color:var(--tenue)}
+.f3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.seg-e{display:flex;gap:6px}
+.seg-e button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px;border-radius:6px;border:1px solid var(--linea2);font-size:13px;color:var(--tinta2)}
+.seg-e button.on.logrado{background:var(--ok-s);border-color:var(--ok);color:var(--ok);font-weight:500}
+.seg-e button.on.proceso{background:var(--pro-s);border-color:var(--pro);color:var(--pro);font-weight:500}
+.seg-e button.on.no{background:var(--no-s);border-color:var(--no);color:var(--no);font-weight:500}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);opacity:0;background:var(--tinta);color:var(--sup);
+  padding:10px 16px;border-radius:8px;font-size:13px;transition:.22s;pointer-events:none;z-index:70}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+.menuB{display:none}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .lat{position:fixed;left:0;top:0;bottom:0;width:270px;z-index:40;transform:translateX(-100%);transition:transform .2s;
+    padding-top:env(safe-area-inset-top,0px)}
+  .app.movil .lat{transform:none;box-shadow:20px 0 50px rgba(0,0,0,.12)}
+  .menuB{display:grid}
+  main{padding:20px 16px 60px} .sup{padding:0 14px}
+  .kp{grid-template-columns:1fr 1fr} .k:nth-child(2){border-right:0} .k:nth-child(-n+2){border-bottom:1px solid var(--linea)}
+  .ent-h{flex-wrap:wrap} .estados{width:100%;padding-left:44px}
+  .ent-b,.ent-f,.hist{padding-left:18px} .nota-e{margin-left:18px}
+  .busca{width:100%;margin-left:0} .f3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="lat">
+    <div class="lat-h">
+      <span class="logo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg></span>
+      <div><b>Bitácora</b><span>Cambios por proyecto</span></div>
+    </div>
+    <div class="lat-t">Proyectos
+      <button id="nuevoP" title="Nuevo proyecto" aria-label="Nuevo proyecto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <nav class="proys" id="proys"></nav>
+    <div class="lat-p"><i class="pt" id="ptAlm"></i><span id="txtAlm">Conectando…</span><span class="sp"></span>
+      <button class="icb" id="salirB" hidden title="Salir" aria-label="Salir"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H4"/></svg></button>
+      <button class="icb" id="temaB" aria-label="Cambiar tema"></button></div>
+  </aside>
+  <div class="cont">
+    <header class="sup">
+      <button class="icb menuB" id="menuB" aria-label="Proyectos"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="migas" id="migas">Bitácora</div><span class="esp"></span>
+    </header>
+    <main id="main"><div class="pag" id="vista"><div class="cargando">Abriendo la bitácora…<br><br>Si este mensaje no cambia, ábrelo con Safari, Chrome o Edge: algunas vistas previas del celular y de carpetas muestran el archivo sin ejecutarlo.</div></div></main>
+  </div>
+</div>
+<div class="md" id="md"><div class="mb" id="mb"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═════════════ ALMACÉN ═════════════
+   Los datos NO viven en este repositorio (que es público): viven en
+   bitacora.json dentro del repo PRIVADO pahlass/bitacora-interna. Esta
+   página solo es la interfaz; para leer o escribir pide un token de
+   GitHub de alguien con acceso a ese repo. Cada cambio es un commit, así
+   que el historial completo queda guardado en GitHub. */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const ESTADOS={
+  proceso:{n:'En proceso',s:'◐',ico:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2"/></svg>'},
+  logrado:{n:'Logrado',s:'✓',ico:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'},
+  no:{n:'No logrado',s:'✗',ico:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M17 7 7 17M7 7l10 10"/></svg>'},
+};
+const CATEG=['Diseño','Funcionalidad','Error','Datos','Contenido','Seguridad','Otro'];
+const ORIGEN=['Solicitud a Claude Code','Cambio propio','Solicitud del cliente','Otra IA'];
+const PRIO=['Alta','Media','Baja'];
+
+const REPO='pahlass/bitacora-interna', RAMA='main', RUTA='bitacora.json', LT='bitacora.token';
+
+const S={modo:null,token:null,login:null,sha:null,base:{proyectos:[],cambios:{}},pend:[],err:'',
+  proyectos:[],cambios:{},pid:null,
+  tab:'cambios',filtro:'todos',q:'',orden:'recientes',abierto:{},notaPara:null};
+
+const nid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const ahora=()=>new Date().toISOString();
+const copia=o=>JSON.parse(JSON.stringify(o));
+function aB64(str){const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode(...b.subarray(i,i+0x8000));return btoa(s);}
+function deB64(b64){const bin=atob(b64.replace(/\n/g,''));return new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0)));}
+
+function gh(ruta,op={}){
+  return fetch(`https://api.github.com/repos/${REPO}${ruta}`,{cache:'no-store',...op,
+    headers:{'Authorization':`Bearer ${S.token}`,'Accept':'application/vnd.github+json',
+      ...(op.body?{'Content-Type':'application/json'}:{})}});
+}
+class ErrGH extends Error{constructor(m,st){super(m);this.st=st;}}
+
+/* Lee bitacora.json del repo privado. Si todavía no existe (repo recién
+   creado), arranca vacío y se crea con el primer guardado. */
+async function leer(){
+  const r=await gh(`/contents/${RUTA}?ref=${RAMA}`);
+  if(r.status===404){
+    const rr=await gh('');
+    if(!rr.ok) throw new ErrGH(`No encuentro ${REPO} o tu token no tiene acceso a él.`,rr.status);
+    S.sha=null;S.base={proyectos:[],cambios:{}};return;
+  }
+  if(!r.ok) throw new ErrGH(r.status===401?'El token ya no es válido.':`GitHub respondió ${r.status}.`,r.status);
+  const d=await r.json();
+  let txt=d.content?deB64(d.content):'';
+  if(!txt&&d.size){ // >1 MB: la API de contents ya no manda el contenido, se pide el blob
+    const b=await gh(`/git/blobs/${d.sha}`);txt=deB64((await b.json()).content);}
+  const j=txt?JSON.parse(txt):{};
+  S.sha=d.sha;S.base={proyectos:j.proyectos||[],cambios:j.cambios||{}};
+}
+/* Lo que se ve = último estado confirmado en GitHub + lo que aún se está guardando */
+function recompone(){
+  const d=copia(S.base);
+  for(const op of S.pend){try{op.fn(d);}catch(_){}}
+  S.proyectos=d.proyectos;S.cambios=d.cambios;
+  if(S.pid&&!S.proyectos.some(p=>p.id===S.pid)) S.pid=S.proyectos[0]?S.proyectos[0].id:null;
+  if(!S.pid&&S.proyectos[0]) S.pid=S.proyectos[0].id;
+}
+function estadoAlm(){
+  if(S.modo!=='gh') return;
+  const t=S.pend.length?(S.err?'Sin conexión — pendiente de guardar':'Guardando…'):S.err?'No se guardó el último cambio':`Guardado en GitHub · ${S.login}`;
+  $('ptAlm').classList.toggle('on',!S.pend.length&&!S.err);$('txtAlm').textContent=t;$('txtAlm').title=t;
+}
+
+/* Cada operación es una función que modifica los datos; se aplica al
+   momento en pantalla y luego se sube como un commit. Si alguien más del
+   equipo guardó en medio (conflicto), se vuelve a leer y se reaplica. */
+let trabajando=false;
+function mutar(mensaje,fn){
+  S.pend.push({mensaje,fn});S.err='';
+  const o={proyectos:S.proyectos,cambios:S.cambios};const r=fn(o);S.proyectos=o.proyectos;S.cambios=o.cambios;
+  pinta();estadoAlm();procesa();
+  return r;
+}
+async function procesa(){
+  if(trabajando||S.modo!=='gh') return;trabajando=true;
+  while(S.pend.length){
+    const op=S.pend[0];let ok=false,reintentar=false;
+    for(let i=0;i<4&&!ok;i++){
+      const d=copia(S.base);op.fn(d);
+      try{
+        const body={message:`Bitácora: ${op.mensaje}${S.login?` (@${S.login})`:''}`,
+          content:aB64(JSON.stringify(d,null,2)+'\n'),branch:RAMA};
+        if(S.sha) body.sha=S.sha;
+        const r=await gh(`/contents/${RUTA}`,{method:'PUT',body:JSON.stringify(body)});
+        if(r.ok){S.sha=(await r.json()).content.sha;S.base=d;ok=true;break;}
+        if(r.status===409||r.status===422){await leer();continue;}
+        throw new ErrGH(r.status===401?'El token ya no es válido.':r.status===403||r.status===404?'Tu token no tiene permiso de escritura en el repo.':`GitHub respondió ${r.status}.`,r.status);
+      }catch(e){
+        if(e instanceof ErrGH){S.err=e.message;toast('No se pudo guardar: '+e.message);}
+        else{S.err='sin conexión';reintentar=true;toast('Sin conexión: se guardará en cuanto vuelva.');}
+        break;
+      }
+    }
+    if(reintentar) break;           // se queda en la cola; se reintenta al volver la conexión
+    S.pend.shift();
+    if(ok) S.err='';
+    else if(!S.err){S.err='conflicto';toast('No se pudo guardar. Intenta de nuevo.');}
+    recompone();pinta();estadoAlm();
+  }
+  trabajando=false;estadoAlm();
+}
+window.addEventListener('online',()=>procesa());
+setInterval(()=>{if(S.pend.length)procesa();},30000);
+
+async function arrancar(){
+  let t=null;try{t=localStorage.getItem(LT);}catch(_){}
+  if(!t){S.modo='login';$('txtAlm').textContent='Sin conectar';return pinta();}
+  S.token=t;S.modo=null;pinta();
+  try{
+    const u=await fetch('https://api.github.com/user',{headers:{'Authorization':`Bearer ${t}`}});
+    if(u.status===401) throw new ErrGH('El token ya no es válido.',401);
+    S.login=u.ok?(await u.json()).login:'';
+    await leer();
+  }catch(e){
+    S.modo='login';S.errLogin=e.message||'No hay conexión con GitHub.';$('txtAlm').textContent='Sin conectar';
+    if(e.st===401){try{localStorage.removeItem(LT);}catch(_){} S.token=null;}
+    return pinta();
+  }
+  S.modo='gh';$('salirB').hidden=false;
+  recompone();estadoAlm();pinta();
+}
+async function conectar(){
+  const i=$('tok');const t=(i&&i.value||'').trim();if(!t){i&&i.focus();return;}
+  try{localStorage.setItem(LT,t);}catch(_){}
+  S.errLogin='';await arrancar();
+  if(S.modo!=='gh'){try{localStorage.removeItem(LT);}catch(_){}}
+}
+function salir(){try{localStorage.removeItem(LT);}catch(_){} location.reload();}
+
+/* Trae lo que haya guardado el resto del equipo, sin interrumpir si se está escribiendo algo */
+async function refresca(){
+  if(S.modo!=='gh'||S.pend.length||trabajando||document.hidden) return;
+  const antes=S.sha;
+  try{await leer();}catch(_){return;}
+  if(S.sha===antes||S.pend.length) return;
+  recompone();
+  if(!$('md').classList.contains('on')&&!S.notaPara) pinta();
+}
+setInterval(refresca,60000);
+document.addEventListener('visibilitychange',refresca);
+
+function elegirProyecto(pid){
+  S.pid=pid;S.filtro='todos';S.q='';S.notaPara=null;
+  pinta();
+}
+
+/* ═════════════ OPERACIONES ═════════════ */
+const nombreP=(d,pid)=>((d.proyectos.find(p=>p.id===pid)||{}).nombre||'');
+
+async function crearProyecto(d){
+  const id=nid(),p={nombre:d.nombre,desc:d.desc||'',creado:ahora(),por:S.login};
+  mutar(`nuevo proyecto "${d.nombre}"`,x=>{x.proyectos.push({id,...p});x.cambios[id]=x.cambios[id]||[];});
+  elegirProyecto(id);
+}
+async function editarProyecto(pid,d){
+  mutar(`editar proyecto "${d.nombre}"`,x=>{const p=x.proyectos.find(p=>p.id===pid);if(p)Object.assign(p,{nombre:d.nombre,desc:d.desc||''});});
+}
+async function borrarProyecto(pid){
+  mutar(`eliminar proyecto "${nombreP(S,pid)}"`,x=>{x.proyectos=x.proyectos.filter(p=>p.id!==pid);delete x.cambios[pid];});
+  elegirProyecto(S.proyectos[0]?S.proyectos[0].id:null);
+}
+async function crearCambio(d){
+  const pid=S.pid,id=nid(),t=ahora();
+  const num=mutar(`nuevo cambio en ${nombreP(S,pid)}: ${d.titulo}`,x=>{
+    const lista=x.cambios[pid]=x.cambios[pid]||[];
+    const num=lista.reduce((m,c)=>Math.max(m,c.num||0),0)+1;
+    lista.push({id,num,titulo:d.titulo,que:d.que,como:d.como||'',categoria:d.categoria,origen:d.origen,prioridad:d.prioridad,
+      estado:d.estado,creado:t,actualizado:t,por:S.login,historial:[{estado:d.estado,fecha:t,nota:'Registrado',por:S.login}]});
+    return num;});
+  toast(`Cambio #${num} registrado`);
+}
+async function editarCambio(cid,d){
+  const pid=S.pid,t=ahora();
+  const c0=(S.cambios[pid]||[]).find(x=>x.id===cid);
+  mutar(`editar #${c0?c0.num:''} en ${nombreP(S,pid)}`,x=>{
+    const c=(x.cambios[pid]||[]).find(y=>y.id===cid);if(!c)return;
+    const campos={titulo:d.titulo,que:d.que,como:d.como||'',categoria:d.categoria,origen:d.origen,prioridad:d.prioridad,actualizado:t};
+    if(d.estado!==c.estado){campos.estado=d.estado;campos.historial=[...(c.historial||[]),{estado:d.estado,fecha:t,nota:'',por:S.login}];}
+    Object.assign(c,campos);});
+}
+async function cambiarEstado(cid,estado,nota){
+  const pid=S.pid,t=ahora();
+  const c0=(S.cambios[pid]||[]).find(x=>x.id===cid);if(!c0)return;
+  mutar(`#${c0.num} en ${nombreP(S,pid)} → ${ESTADOS[estado].n.toLowerCase()}`,x=>{
+    const c=(x.cambios[pid]||[]).find(y=>y.id===cid);if(!c)return;
+    const campos={estado,actualizado:t,historial:[...(c.historial||[]),{estado,fecha:t,nota:nota||'',por:S.login}]};
+    if(estado==='logrado'&&nota&&!c.como) campos.como=nota;
+    Object.assign(c,campos);});
+  toast(`#${c0.num} marcado como ${ESTADOS[estado].n.toLowerCase()}`);
+}
+async function borrarCambio(cid){
+  const pid=S.pid;const c0=(S.cambios[pid]||[]).find(x=>x.id===cid);
+  mutar(`eliminar #${c0?c0.num:''} en ${nombreP(S,pid)}`,x=>{x.cambios[pid]=(x.cambios[pid]||[]).filter(y=>y.id!==cid);});
+}
+
+/* ═════════════ FORMATO ═════════════ */
+const fecha=iso=>new Date(iso).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});
+const hora=iso=>new Date(iso).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+const fechaHora=iso=>fecha(iso)+' · '+hora(iso);
+function relativo(iso){const s=(Date.now()-new Date(iso))/1000;
+  if(s<60)return'hace un momento';if(s<3600)return`hace ${Math.floor(s/60)} min`;
+  if(s<86400)return`hace ${Math.floor(s/3600)} h`;if(s<172800)return'ayer';return fecha(iso);}
+const cuenta=l=>({total:l.length,logrado:l.filter(c=>c.estado==='logrado').length,
+  proceso:l.filter(c=>c.estado==='proceso').length,no:l.filter(c=>c.estado==='no').length});
+const barra=k=>k.total?`<i style="width:${k.logrado/k.total*100}%;background:var(--ok)"></i><i style="width:${k.proceso/k.total*100}%;background:var(--pro)"></i><i style="width:${k.no/k.total*100}%;background:var(--no)"></i>`:'';
+
+/* ═════════════ PINTADO ═════════════ */
+function pinta(){
+  $('proys').innerHTML=S.proyectos.length?S.proyectos.map(p=>{const k=cuenta(S.cambios[p.id]||[]);
+    return `<button class="pry" data-p="${p.id}" aria-current="${p.id===S.pid}">
+      <div class="pry-n"><span>${esc(p.nombre)}</span><span class="num">${k.total||''}</span></div>
+      <div class="pry-b">${barra(k)}</div></button>`}).join('')
+    :`<div style="padding:10px;font-size:12.5px;color:var(--tenue)">Aún no hay proyectos.</div>`;
+  const p=S.proyectos.find(x=>x.id===S.pid);
+  $('migas').innerHTML=p?`Bitácora <span>/</span> <b>${esc(p.nombre)}</b>`:'Bitácora';
+  $('vista').innerHTML=p?vistaProyecto(p):bienvenida();
+  if(S.notaPara){const t=$('notaTxt');if(t)t.focus();}
+}
+function bienvenida(){
+  if(S.modo===null) return `<div class="cargando">Conectando con GitHub…</div>`;
+  if(S.modo==='login') return `<div class="vacia" style="margin-top:40px;text-align:left;max-width:520px;margin-left:auto;margin-right:auto;padding:32px 28px">
+    <b>Entrar a la bitácora</b>
+    <p style="margin:0 0 14px;max-width:none">Es privada: los datos viven en el repositorio privado <span class="num">${REPO}</span>. Entra con un token de GitHub de una cuenta que tenga acceso a él.</p>
+    <ol style="margin:0 0 16px;padding-left:18px;font-size:12.5px;color:var(--tinta2);display:grid;gap:3px">
+      <li>Abre <span class="num">github.com/settings/personal-access-tokens/new</span></li>
+      <li>Resource owner: <strong style="font-weight:500">pahlass</strong> · Repository access: Only select repositories → <span class="num">bitacora-interna</span></li>
+      <li>Permissions → Repository → Contents → <strong style="font-weight:500">Read and write</strong></li>
+      <li>Generate token y pégalo aquí</li>
+    </ol>
+    <div class="cp"><input id="tok" type="password" autocomplete="off" placeholder="github_pat_…"></div>
+    ${S.errLogin?`<p style="margin:10px 0 0;max-width:none;color:var(--no);font-size:12.5px">${esc(S.errLogin)}</p>`:''}
+    <button class="bt pr" data-accion="conectar" style="margin-top:14px;width:100%;justify-content:center">Entrar</button>
+    <p style="margin:14px 0 0;max-width:none;font-size:12px">El token se guarda solo en este navegador y solo se envía a GitHub.</p></div>`;
+  return `<div class="vacia" style="margin-top:40px"><b>Empieza con tu primer proyecto</b>
+    <p>Cada proyecto guarda su propia bitácora: qué se pidió, cuándo, cómo se resolvió y si se logró.</p>
+    <button class="bt pr" data-accion="nuevoP">Crear proyecto</button></div>`;
+}
+function vistaProyecto(p){
+  const todos=S.cambios[p.id]||[];const k=cuenta(todos);
+  const pct=k.total?Math.round(k.logrado/k.total*100):0;
+  return `<div class="cab"><div><h1>${esc(p.nombre)}</h1>${p.desc?`<p>${esc(p.desc)}</p>`:''}</div>
+    <div class="acc">
+      <button class="bt" data-accion="editarP">Editar proyecto</button>
+      <button class="bt" data-accion="exportar" ${todos.length?'':'disabled'}>Exportar</button>
+      <button class="bt pr" data-accion="nuevoC"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Registrar cambio</button>
+    </div></div>
+  <div class="kp">
+    <div class="k"><span>Cambios registrados</span><b class="num">${k.total}</b></div>
+    <div class="k"><span style="color:var(--ok)">${ESTADOS.logrado.ico} Logrados</span><b class="num">${k.logrado}</b></div>
+    <div class="k"><span style="color:var(--pro)">${ESTADOS.proceso.ico} En proceso</span><b class="num">${k.proceso}</b></div>
+    <div class="k"><span style="color:var(--no)">${ESTADOS.no.ico} No logrados</span><b class="num">${k.no}</b></div>
+  </div>
+  <div class="prog"><span class="bar">${barra(k)}</span><span class="num">${pct}% logrado</span></div>
+  <div class="tabs">
+    <button class="tab ${S.tab==='cambios'?'on':''}" data-tab="cambios">Cambios</button>
+    <button class="tab ${S.tab==='historial'?'on':''}" data-tab="historial">Historial</button>
+  </div>
+  ${S.tab==='cambios'?listaCambios(todos,k):historial(todos)}`;
+}
+function listaCambios(todos,k){
+  if(!todos.length) return `<div class="vacia"><b>Sin cambios todavía</b>
+    <p>Registra cada cambio que hagas o le pidas a Claude Code. Después lo marcas como logrado, no logrado o en proceso.</p>
+    <button class="bt pr" data-accion="nuevoC">Registrar el primero</button></div>`;
+  const q=S.q.toLowerCase();
+  let l=todos.filter(c=>(S.filtro==='todos'||c.estado===S.filtro)&&
+    (!q||[c.titulo,c.que,c.como,c.categoria,'#'+c.num].join(' ').toLowerCase().includes(q)));
+  l=[...l].sort((a,b)=>S.orden==='recientes'?b.num-a.num:S.orden==='antiguos'?a.num-b.num
+    :new Date(b.actualizado)-new Date(a.actualizado));
+  return `<div class="fil">
+    ${[['todos','Todos',k.total],['proceso','En proceso',k.proceso],['logrado','Logrados',k.logrado],['no','No logrados',k.no]]
+      .map(([f,n,v])=>`<button class="chip ${S.filtro===f?'on':''}" data-filtro="${f}">${n}<span class="num">${v}</span></button>`).join('')}
+    <select class="sel" id="orden" aria-label="Orden">
+      ${[['recientes','Más recientes'],['antiguos','Más antiguos'],['movidos','Último movimiento']].map(([v,n])=>`<option value="${v}" ${S.orden===v?'selected':''}>${n}</option>`).join('')}
+    </select>
+    <label class="busca"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--tenue)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+      <input id="q" placeholder="Buscar en la bitácora" value="${esc(S.q)}"></label>
+  </div>
+  ${l.length?l.map(entrada).join(''):`<div class="vacia"><b>Nada coincide</b><p>Prueba con otra palabra o quita el filtro.</p></div>`}`;
+}
+function entrada(c){
+  const ab=!!S.abierto[c.id];
+  return `<article class="ent">
+    <div class="ent-h"><span class="est-i ${c.estado}" title="${ESTADOS[c.estado].n}">${ESTADOS[c.estado].ico}</span>
+      <div class="ent-t"><h3>${esc(c.titulo)}</h3>
+        <div class="meta"><span class="num">#${c.num}</span><span class="eti">${esc(c.categoria)}</span>
+          ${c.prioridad==='Alta'?'<span class="eti alta">Prioridad alta</span>':''}
+          <span>${esc(c.origen)}</span><span title="${fechaHora(c.creado)}">Registrado ${fecha(c.creado)}</span>
+          ${c.actualizado!==c.creado?`<span title="${fechaHora(c.actualizado)}">Movido ${relativo(c.actualizado)}</span>`:''}</div></div>
+      <div class="estados">${Object.entries(ESTADOS).map(([k,e])=>
+        `<button class="${k} ${c.estado===k?'on':''}" data-est="${k}" data-c="${c.id}" title="Marcar como ${e.n.toLowerCase()}">${e.ico}${e.n}</button>`).join('')}</div>
+    </div>
+    ${S.notaPara&&S.notaPara.c===c.id?`<div class="nota-e">
+      <label for="notaTxt">${S.notaPara.e==='logrado'?'¿Cómo se logró? (opcional)':S.notaPara.e==='no'?'¿Por qué no se logró? (opcional)':'¿Qué falta? (opcional)'}</label>
+      <textarea id="notaTxt" placeholder="Queda en el historial con la fecha de hoy"></textarea>
+      <div class="acc"><button class="bt" data-accion="cancelaNota">Cancelar</button>
+        <button class="bt pr" data-accion="confirmaNota">Marcar como ${ESTADOS[S.notaPara.e].n.toLowerCase()}</button></div></div>`:''}
+    <div class="ent-b">
+      <div class="bloque"><span>Qué se pidió</span><p>${esc(c.que)}</p></div>
+      <div class="bloque"><span>Cómo se hizo</span><p class="${c.como?'':'vacio'}">${c.como?esc(c.como):'Sin documentar todavía'}</p></div>
+    </div>
+    <div class="ent-f">
+      <button class="lnk" data-hist="${c.id}">${ab?'Ocultar':'Ver'} historial · ${(c.historial||[]).length}</button>
+      <span style="flex:1"></span>
+      <button class="lnk" data-editarC="${c.id}">Editar</button>
+      <button class="lnk pel" data-borrarC="${c.id}">Eliminar</button>
+    </div>
+    ${ab?`<div class="hist">${(c.historial||[]).map(h=>`<div class="ev"><i class="${h.estado}"></i>
+      <div><b>${ESTADOS[h.estado].n}</b><time>${fechaHora(h.fecha)}</time>${h.nota?`<p>${esc(h.nota)}</p>`:''}</div></div>`).join('')}</div>`:''}
+  </article>`;
+}
+function historial(todos){
+  const ev=todos.flatMap(c=>(c.historial||[]).map((h,i)=>({...h,c,primero:i===0}))).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  if(!ev.length) return `<div class="vacia"><b>Sin movimientos</b><p>Aquí aparece, en orden, todo lo que ha pasado en el proyecto.</p></div>`;
+  let dia='';
+  return ev.map(e=>{const d=fecha(e.fecha);const cab=d!==dia?`<div class="dia">${d}</div>`:'';dia=d;
+    return cab+`<div class="act"><span class="est-i ${e.estado}">${ESTADOS[e.estado].ico}</span>
+      <div><b>#${e.c.num} ${esc(e.c.titulo)}</b><br><span>${e.primero?'Registrado como '+ESTADOS[e.estado].n.toLowerCase():'Marcado como '+ESTADOS[e.estado].n.toLowerCase()}</span>
+      ${e.nota&&e.nota!=='Registrado'?`<p>${esc(e.nota)}</p>`:''}</div><time>${hora(e.fecha)}</time></div>`}).join('');
+}
+
+/* ═════════════ FORMULARIOS ═════════════ */
+function modal(h){$('mb').innerHTML=h;$('md').classList.add('on');setTimeout(()=>{const f=$('mb').querySelector('input,textarea');if(f)f.focus();},30);}
+function cierraModal(){$('md').classList.remove('on');}
+let enviarModal=null;
+function formProyecto(p){
+  modal(`<div class="mb-h"><h2>${p?'Editar proyecto':'Nuevo proyecto'}</h2><button class="icb" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="mb-b">
+    <div class="cp"><label for="fN">Nombre <i>*</i></label><input id="fN" value="${esc(p?p.nombre:'')}" placeholder="Pahlass Education, Pahlass Health…"></div>
+    <div class="cp"><label for="fD">Descripción</label><textarea id="fD" style="min-height:64px" placeholder="De qué trata, para quién, repositorio…">${esc(p?p.desc:'')}</textarea></div>
+  </div>
+  <div class="mb-f">${p?'<button class="bt pel" data-accion="borrarP" style="margin-right:auto">Eliminar proyecto</button>':'<span class="ay">⌘ + Enter para guardar</span>'}
+    <button class="bt" data-cerrar>Cancelar</button><button class="bt pr" data-accion="enviar">${p?'Guardar':'Crear proyecto'}</button></div>`);
+  enviarModal=async()=>{const n=$('fN').value.trim();
+    if(!n){$('fN').parentNode.classList.add('err');$('fN').focus();return;}
+    cierraModal();const d={nombre:n,desc:$('fD').value.trim()};
+    if(p) await editarProyecto(p.id,d); else await crearProyecto(d);};
+}
+function formCambio(c){
+  let est=c?c.estado:'proceso';
+  const opc=(l,v)=>l.map(x=>`<option ${x===v?'selected':''}>${x}</option>`).join('');
+  modal(`<div class="mb-h"><h2>${c?`Editar cambio #${c.num}`:'Registrar cambio'}</h2><button class="icb" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="mb-b">
+    <div class="cp"><label for="fT">Título <i>*</i></label><input id="fT" value="${esc(c?c.titulo:'')}" placeholder="Ej. Quitar el botón duplicado de Exportar"></div>
+    <div class="cp"><label for="fQ">Qué se pidió <i>*</i></label><textarea id="fQ" placeholder="Describe el cambio tal como lo pediste o lo necesitas">${esc(c?c.que:'')}</textarea></div>
+    <div class="f3">
+      <div class="cp"><label for="fC">Categoría</label><select id="fC">${opc(CATEG,c?c.categoria:'Funcionalidad')}</select></div>
+      <div class="cp"><label for="fO">Origen</label><select id="fO">${opc(ORIGEN,c?c.origen:'Solicitud a Claude Code')}</select></div>
+      <div class="cp"><label for="fP">Prioridad</label><select id="fP">${opc(PRIO,c?c.prioridad:'Media')}</select></div>
+    </div>
+    <div class="cp"><label>Estado</label><div class="seg-e" id="fE">${Object.entries(ESTADOS).map(([k,e])=>
+      `<button type="button" class="${k} ${est===k?'on':''}" data-fe="${k}">${e.ico}${e.n}</button>`).join('')}</div></div>
+    <div class="cp"><label for="fH">Cómo se hizo</label><textarea id="fH" style="min-height:64px" placeholder="Qué se modificó, en qué archivos, qué decisión se tomó…">${esc(c?c.como:'')}</textarea>
+      <small>Puedes llenarlo después, al marcarlo como logrado.</small></div>
+  </div>
+  <div class="mb-f"><span class="ay">⌘ + Enter para guardar</span><button class="bt" data-cerrar>Cancelar</button>
+    <button class="bt pr" data-accion="enviar">${c?'Guardar cambios':'Registrar'}</button></div>`);
+  $('fE').onclick=e=>{const b=e.target.closest('[data-fe]');if(!b)return;est=b.dataset.fe;
+    $('fE').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.fe===est));};
+  enviarModal=async()=>{const t=$('fT').value.trim(),q=$('fQ').value.trim();let mal=false;
+    [['fT',t],['fQ',q]].forEach(([id,v])=>{$(id).parentNode.classList.toggle('err',!v);if(!v)mal=true;});
+    if(mal){(t?$('fQ'):$('fT')).focus();return;}
+    cierraModal();const d={titulo:t,que:q,como:$('fH').value.trim(),categoria:$('fC').value,origen:$('fO').value,prioridad:$('fP').value,estado:est};
+    if(c) await editarCambio(c.id,d); else await crearCambio(d);};
+}
+function confirmar(titulo,texto,boton,fn){
+  modal(`<div class="mb-h"><h2>${titulo}</h2></div><div class="mb-b"><p style="margin:0;color:var(--tinta2)">${texto}</p></div>
+    <div class="mb-f"><button class="bt" data-cerrar>Cancelar</button><button class="bt pr" style="background:var(--no);border-color:var(--no)" data-accion="enviar">${boton}</button></div>`);
+  enviarModal=async()=>{cierraModal();await fn();};
+}
+
+/* ═════════════ EXPORTAR ═════════════ */
+function markdown(p){
+  const l=[...(S.cambios[p.id]||[])].sort((a,b)=>a.num-b.num),k=cuenta(l);
+  let m=`# Bitácora · ${p.nombre}\n\n${p.desc?p.desc+'\n\n':''}Exportado el ${fechaHora(ahora())}\n\n`;
+  m+=`| Total | Logrados | En proceso | No logrados |\n|---|---|---|---|\n| ${k.total} | ${k.logrado} | ${k.proceso} | ${k.no} |\n\n---\n\n`;
+  for(const c of l){
+    m+=`## #${c.num} · ${c.titulo}  ${ESTADOS[c.estado].s} ${ESTADOS[c.estado].n}\n\n`;
+    m+=`- **Categoría:** ${c.categoria} · **Origen:** ${c.origen} · **Prioridad:** ${c.prioridad}\n- **Registrado:** ${fechaHora(c.creado)}\n\n`;
+    m+=`**Qué se pidió**\n\n${c.que}\n\n**Cómo se hizo**\n\n${c.como||'_Sin documentar_'}\n\n**Historial**\n\n`;
+    m+=(c.historial||[]).map(h=>`- ${fechaHora(h.fecha)} — ${ESTADOS[h.estado].s} ${ESTADOS[h.estado].n}${h.nota&&h.nota!=='Registrado'?': '+h.nota:''}`).join('\n')+'\n\n---\n\n';
+  }
+  return m;
+}
+async function exportar(){
+  const p=S.proyectos.find(x=>x.id===S.pid);if(!p)return;
+  const nombre=`bitacora-${p.nombre.toLowerCase().normalize('NFD').replace(/[^\w]+/g,'-').replace(/^-|-$/g,'')}.md`;
+  const texto=markdown(p);
+  try{
+    const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
+    if(dl){const r=await dl.save({filename:nombre,data:texto});if(r.status==='saved')toast('Bitácora exportada');return;}
+  }catch(e){if(e&&e.code&&e.code!=='unavailable')return;}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([texto],{type:'text/markdown'}));
+  a.download=nombre;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},300);
+  toast('Bitácora exportada');
+}
+
+/* ═════════════ EVENTOS ═════════════ */
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400);}
+function tema(t){document.documentElement.dataset.tema=t;
+  $('temaB').innerHTML=t==='oscuro'
+    ?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M5 5 3.6 3.6M20.4 20.4 19 19M5 19l-1.4 1.4M20.4 3.6 19 5M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/></svg>'
+    :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7Z"/></svg>';
+  try{localStorage.setItem('bitacora.tema',t)}catch(_){}}
+
+document.addEventListener('click',async e=>{const t=e.target;
+  if(t.id==='md'||t.closest('[data-cerrar]'))return cierraModal();
+  const p=t.closest('[data-p]');if(p){$('app').classList.remove('movil');return elegirProyecto(p.dataset.p);}
+  if(t.closest('#salirB'))return salir();
+  if(t.closest('#nuevoP'))return S.modo==='gh'?formProyecto(null):null;
+  if(t.closest('#temaB'))return tema(document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro');
+  if(t.closest('#menuB'))return $('app').classList.toggle('movil');
+  const tb=t.closest('[data-tab]');if(tb){S.tab=tb.dataset.tab;return pinta();}
+  const fl=t.closest('[data-filtro]');if(fl){S.filtro=fl.dataset.filtro;return pinta();}
+  const hs=t.closest('[data-hist]');if(hs){S.abierto[hs.dataset.hist]=!S.abierto[hs.dataset.hist];return pinta();}
+  const es=t.closest('[data-est]');if(es){const c=S.cambios[S.pid].find(x=>x.id===es.dataset.c);
+    if(c.estado===es.dataset.est){S.notaPara=null;return pinta();}
+    S.notaPara={c:es.dataset.c,e:es.dataset.est};return pinta();}
+  const ec=t.closest('[data-editarC]');if(ec)return formCambio(S.cambios[S.pid].find(x=>x.id===ec.dataset.editarc));
+  const bc=t.closest('[data-borrarC]');if(bc){const c=S.cambios[S.pid].find(x=>x.id===bc.dataset.borrarc);
+    return confirmar(`¿Eliminar el cambio #${c.num}?`,`Se borra "${esc(c.titulo)}" con todo su historial. No se puede deshacer.`,'Eliminar',()=>borrarCambio(c.id));}
+  const ac=t.closest('[data-accion]');if(!ac)return;
+  const a=ac.dataset.accion;
+  if(a==='conectar')return conectar();
+  if(a==='nuevoP')return formProyecto(null);
+  if(a==='editarP')return formProyecto(S.proyectos.find(x=>x.id===S.pid));
+  if(a==='nuevoC')return formCambio(null);
+  if(a==='exportar')return exportar();
+  if(a==='enviar'&&enviarModal)return enviarModal();
+  if(a==='cancelaNota'){S.notaPara=null;return pinta();}
+  if(a==='confirmaNota'){const {c,e:est}=S.notaPara;const nota=($('notaTxt')||{}).value||'';S.notaPara=null;pinta();return cambiarEstado(c,est,nota.trim());}
+  if(a==='borrarP'){const pr=S.proyectos.find(x=>x.id===S.pid);const n=(S.cambios[pr.id]||[]).length;
+    return confirmar(`¿Eliminar "${esc(pr.nombre)}"?`,`Se borran el proyecto y sus ${n} cambios registrados. No se puede deshacer.`,'Eliminar proyecto',()=>borrarProyecto(pr.id));}
+});
+document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;const pos=e.target.selectionStart;pinta();const q=$('q');if(q){q.focus();q.setSelectionRange(pos,pos);}}});
+document.addEventListener('change',e=>{if(e.target.id==='orden'){S.orden=e.target.value;pinta();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.id==='tok'){e.preventDefault();return conectar();}
+  if($('md').classList.contains('on')){
+    if(e.key==='Escape')return cierraModal();
+    if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&enviarModal){e.preventDefault();return enviarModal();}
+    if(e.key==='Enter'&&e.target.tagName==='INPUT'&&enviarModal){e.preventDefault();return enviarModal();}
+    return;}
+  if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&e.target.id==='notaTxt'){e.preventDefault();const b=document.querySelector('[data-accion="confirmaNota"]');if(b)b.click();}
+  if(e.key==='Escape'&&S.notaPara){S.notaPara=null;pinta();}
+});
+
+let t0='claro';try{t0=localStorage.getItem('bitacora.tema')||'claro'}catch(_){}
+tema(t0);
+pinta();
+arrancar();
+</script>
+</body>
+</html>
