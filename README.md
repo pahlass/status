@@ -52,12 +52,12 @@ guarda solo en tu navegador).
 
 `status.pahlass.com/bitacora/` es una bitácora **privada** para el equipo: proyectos, cambios
 pedidos, cómo se hicieron y si se lograron (con su historial). Solo la **interfaz** vive en este
-repo (que es público); los **datos** viven en `bitacora.json` dentro del repo **privado**
-`pahlass/bitacora-interna`. Sin un token con acceso a ese repo, la página no muestra nada.
+repo (que es público); los **datos** viven en `bitacora/datos.json` dentro del repo **privado**
+`pahlass/Core-Pahlass`. Sin un token con acceso a ese repo, la página no muestra nada.
 
 - Para entrar: token fine-grained de GitHub (resource owner `pahlass`, solo el repo
-  `bitacora-interna`, Contents → Read and write). Se guarda solo en el navegador.
-- Para dar acceso a alguien del equipo: agrégalo como colaborador de `pahlass/bitacora-interna`
+  `Core-Pahlass`, Contents → Read and write). Se guarda solo en el navegador.
+- Para dar acceso a alguien del equipo: agrégalo como colaborador de `pahlass/Core-Pahlass`
   y que genere su propio token.
 - Cada acción es un commit en ese repo, con quién la hizo — el historial completo queda en GitHub.
 - La página tiene `noindex`, pero eso no la hace privada: lo privado son los datos.
