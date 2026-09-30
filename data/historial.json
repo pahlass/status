@@ -446,7 +446,7 @@
   },
   {
     "fecha": "2026-09-30",
-    "minutosCaido": 0,
-    "estado": "op"
+    "minutosCaido": 5,
+    "estado": "caido"
   }
 ]
