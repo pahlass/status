@@ -4,6 +4,13 @@
   <link>https://status.pahlass.com/</link>
   <description>Estado, novedades, avances y avisos de Pahlass.</description>
   <item>
+    <title>Correcion de base de datos Alumnos y mejor experiencia en Registro para maestros</title>
+    <link>https://status.pahlass.com/#004</link>
+    <guid isPermaLink="false">004</guid>
+    <pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[Se corrigió errores de filtrado en base de alumnos y se realizo una mejora de experiencia de usuario para el maestro.]]></description>
+  </item>
+  <item>
     <title>Mantenimiento: roles, accesos y versión móvil</title>
     <link>https://status.pahlass.com/#INC-01</link>
     <guid isPermaLink="false">INC-01</guid>
