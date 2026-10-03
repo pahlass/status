@@ -50,5 +50,16 @@
         "x": "Estamos trabajando y mejorando la experiencia de Pahlass en teléfono. Es posible que veas cambios menores en la navegación durante estos días."
       }
     ]
+  },
+  {
+    "id": "004",
+    "t": "novedad",
+    "f": "2026-10-03",
+    "ti": "Correcion de base de datos Alumnos y mejor experiencia en Registro para maestros",
+    "rs": "Se corrigió errores de filtrado en base de alumnos y se realizo una mejora de experiencia de usuario para el maestro.",
+    "x": "Cuando el maestro ingresa a \"Registros\" en la pestañas de \"Alumnos\" se subio la base de datos de los alumnos para que sea lo primero que vea, y las graficas de analisis estan en la parte de abajo. \n\nTambien en la tabla de datos, se agrego una columna \"nota\" al darle clic, lo envia directamente al expediente del alumno seleccionado para poder redactar una nota o incidencia sobre el alumno.",
+    "comp": [],
+    "div": "education",
+    "ts": "2026-10-03T16:17:56.405Z"
   }
 ]
