@@ -4,13 +4,6 @@
   <link>https://status.pahlass.com/</link>
   <description>Estado, novedades, avances y avisos de Pahlass.</description>
   <item>
-    <title>Versión 1.0.0 de Pahlass Education</title>
-    <link>https://status.pahlass.com/#005</link>
-    <guid isPermaLink="false">005</guid>
-    <pubDate>Mon, 05 Oct 2026 00:00:00 GMT</pubDate>
-    <description><![CDATA[5 funciones nuevas, 3 correcciones, 3 cambios de diseño y 1 ajuste de datos.]]></description>
-  </item>
-  <item>
     <title>Correcion de base de datos Alumnos y mejor experiencia en Registro para maestros</title>
     <link>https://status.pahlass.com/#004</link>
     <guid isPermaLink="false">004</guid>
