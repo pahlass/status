@@ -61,16 +61,5 @@
     "comp": [],
     "div": "education",
     "ts": "2026-10-03T16:17:56.405Z"
-  },
-  {
-    "id": "005",
-    "t": "novedad",
-    "f": "2026-10-05",
-    "ti": "Versión 1.0.0 de Pahlass Education",
-    "rs": "5 funciones nuevas, 3 correcciones, 3 cambios de diseño y 1 ajuste de datos.",
-    "x": "Funciones nuevas\n· Corregir accesos y permisos al perfil de \"Control Escolar\"\n· Mejorar la experiencia \"Registros\" en perfil Maestros.\n· Quitar paginas en \"finanzas\"\n· Boton de generar recibo desde \"Registros\"\n· Mejorar la experiencia de cobro.\n\nCorrecciones\n· Corregir Error que surge en perfil de \"Maestro\"\n· Corregir el apellido del profesor David Ivan Peñuelas Quintero.\n· En el concentrado un maestro puede ver lo de todos los maestros, no deberia suceder así, un maestro solo deberia ver lo de su grupo asignado\n\nDiseño\n· Corregir el diseño del sildebar en color Azul\n· Se cambio el color del Sildebar a Azul marino navy #0F2C5C\n· Correcion en \"inicio\" en la tarjeta de \"Acividad Reciente\"\n\nDatos\n· Correcion de visibilidad de adeudo de colegiatura.",
-    "comp": [],
-    "div": "education",
-    "ts": "2026-10-06T00:05:38.410Z"
   }
 ]
