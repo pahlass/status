@@ -1,10 +1,5 @@
 [
   {
-    "fecha": "2026-07-08",
-    "minutosCaido": 0,
-    "estado": "op"
-  },
-  {
     "fecha": "2026-07-09",
     "minutosCaido": 0,
     "estado": "op"
@@ -446,6 +441,11 @@
   },
   {
     "fecha": "2026-10-05",
+    "minutosCaido": 0,
+    "estado": "op"
+  },
+  {
+    "fecha": "2026-10-06",
     "minutosCaido": 0,
     "estado": "op"
   }
