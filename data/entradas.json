@@ -61,5 +61,16 @@
     "comp": [],
     "div": "education",
     "ts": "2026-10-03T16:17:56.405Z"
+  },
+  {
+    "id": "AVI-01",
+    "t": "aviso",
+    "f": "2026-10-06",
+    "ti": "Pahlass evoluciona",
+    "rs": "Estamos renovando la interfaz para dar paso a Coppermind y Diagram. Verás cambios en las próximas semanas; tu información sigue intacta.",
+    "x": "Pahlass evoluciona: conoce Coppermind y Diagram\n\nPahlass está dando un paso importante. Unificamos todo lo que hacemos en dos productos con un propósito claro: Coppermind, la memoria de tu organización, donde se registra, ordena y conecta cada dato de tu operación; y Diagram, la capa de decisión, que convierte esa información en el mapa para decidir mejor.\n\nPor eso, en las próximas semanas verás la plataforma cambiar poco a poco: una interfaz más clara, accesos más rápidos a lo que haces todos los días y nuevas formas de moverte entre tus módulos.\n\nTu información no cambia. Tus registros y configuraciones siguen exactamente donde están, y no necesitas hacer nada. Cada mejora llegará probada, y te avisaremos aquí antes de cada cambio importante.\n\nGracias por construir esto con nosotros. Lo mejor de Pahlass está por venir.",
+    "comp": [],
+    "div": null,
+    "ts": "2026-10-07T05:50:19.052Z"
   }
 ]
