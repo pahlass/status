@@ -8,6 +8,10 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+/* El resumen puede traer formato (**negrita**, [texto](url)…): en el feed va como texto limpio */
+const sinFormato=t=>String(t||'').replace(/\[([^\]]+)\]\((?:https?:\/\/|mailto:)[^\s)]+\)/g,'$1').replace(/(\*\*|~~|==|`)(?=\S)(.+?)\1/g,'$2').replace(/(^|[^*\w])\*(?=\S)([^*]+?)\*(?!\w)/g,'$1$2').replace(/]]>/g,']]&gt;');
+
+
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const entradas = JSON.parse(readFileSync(join(raiz, "data/entradas.json"), "utf8"));
 // estado-global.json lo escribe scripts/actualizar-estado.mjs (vía UptimeRobot,
@@ -39,7 +43,7 @@ function rss(titulo, descripcion, ruta, filas) {
     <link>${SITIO}/#${esc(e.id)}</link>
     <guid isPermaLink="false">${esc(e.id)}</guid>
     <pubDate>${rfc822(e.f)}</pubDate>
-    <description><![CDATA[${e.rs}]]></description>
+    <description><![CDATA[${sinFormato(e.rs)}]]></description>
   </item>`
     )
     .join("\n");

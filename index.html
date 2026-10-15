@@ -167,6 +167,30 @@ html[data-theme="light"] .mk img{filter:none}
 .en-x li{font-size:14.8px;line-height:1.68;color:var(--tx2);margin-bottom:5px}
 .en-x blockquote{margin:0 0 12px;padding-left:16px;border-left:1px solid var(--ln2);
   font-size:14.8px;line-height:1.68;color:var(--tx2)}
+/* formato del cuerpo: negritas, listas, títulos, citas, destacados… */
+.en-x strong,.en .rs strong{font-weight:600;color:var(--tx)}
+.en-x em{font-style:italic}
+.en-x s{opacity:.7}
+.en-x mark{background:rgba(233,196,106,.38);color:inherit;padding:0 2px;border-radius:2px}
+.en-x code{font:.88em ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(127,127,127,.14);padding:1px 5px;border-radius:3px}
+.en-x a,.en .rs a{color:inherit;text-decoration:underline;text-decoration-color:var(--tx3);text-underline-offset:3px}
+.en-x a:hover,.en .rs a:hover{text-decoration-color:currentColor}
+.en-x .md-h{margin:20px 0 8px;font-weight:600;letter-spacing:-.015em;color:var(--tx);line-height:1.3}
+.en-x h3.md-h{font-size:17px}.en-x h4.md-h{font-size:15.5px}
+.en-x h5.md-h{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--tx2)}
+.en-x>.md-h:first-child{margin-top:0}
+.en-x ol{margin:0 0 12px;padding-left:22px}
+.en-x ol li::marker{color:var(--tx3);font-variant-numeric:tabular-nums}
+.en-x li>ul,.en-x li>ol{margin:4px 0 4px}
+.en-x ul.md-tl{list-style:none;padding-left:0}
+.en-x .md-tl li{display:flex;gap:10px}
+.en-x .md-tl li::before{content:"";flex:none;width:13px;height:13px;margin-top:6px;border:1px solid var(--ln2);border-radius:3px}
+.en-x .md-tl li.md-ok::before{background:var(--ok);border-color:var(--ok)}
+.en-x .md-tl li.md-ok{color:var(--tx3)}
+.en-x hr{border:0;border-top:1px solid var(--ln2);margin:18px 0}
+.en-x .md-dest{margin:0 0 12px;padding:12px 14px;border:1px solid var(--ln2);border-left:3px solid var(--rie);border-radius:4px;
+  font-size:14.8px;line-height:1.6;color:var(--tx)}
+.up-x{margin-top:4px}.up-x p,.up-x li{font-size:14px}
 .en-p{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
 .en-p .sp{flex:1}
 .en-p button{font:10px/1.6 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
@@ -343,14 +367,48 @@ function gl(){
   if(GLOBAL.estado==='mant')  return {c:'az', t:'Mantenimiento en curso'};
   return {c:'ok',t:'Pahlass está operativo'};
 }
-function cuerpo(t){let o='',b=[];
-  const v=()=>{if(b.length){o+=`<ul>${b.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;b=[];}};
-  (t||'').split('\n').forEach(li=>{const s=li.trim();
-    if(!s){v();return;}
-    if(s.startsWith('·')) b.push(s.replace(/^·\s*/,''));
-    else if(s.startsWith('"')) {v(); o+=`<blockquote>${esc(s)}</blockquote>`;}
-    else {v(); o+=`<p>${esc(s)}</p>`;}});
-  v(); return o;}
+/* Formato del cuerpo (compatible con lo anterior: "·" viñeta y " cita siguen funcionando).
+   Bloques: # / ## / ### título · - o · viñeta (2 espacios antes = sub-viñeta) · 1. número
+   · [ ] / [x] tarea · > cita · !! destacado · --- separador · línea en blanco = párrafo nuevo.
+   En línea: **negrita** *cursiva* ~~tachado~~ ==resaltado== `código` [texto](https://…) y enlaces sueltos.
+   Todo se escapa primero; solo se generan etiquetas fijas y enlaces http(s)/mailto. */
+const escMd=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function enLinea(s){
+  const g=[],tok=h=>'\u0000'+(g.push(h)-1)+'\u0000';
+  const a=(u,x)=>tok(`<a href="${u}" target="_blank" rel="noopener noreferrer">${x}</a>`);
+  let t=escMd(s).replace(/`([^`]+)`/g,(_,c)=>tok(`<code>${c}</code>`))
+    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^\s)]+)\)/g,(_,x,u)=>a(u,x))
+    .replace(/(^|[\s(])(https?:\/\/[^\s<]*[^\s<.,;:!?)])/g,(_,p,u)=>p+a(u,u.replace(/^https?:\/\//,'')));
+  t=t.replace(/\*\*(?=\S)(.+?)\*\*/g,'<strong>$1</strong>').replace(/~~(?=\S)(.+?)~~/g,'<s>$1</s>').replace(/==(?=\S)(.+?)==/g,'<mark>$1</mark>')
+    .replace(/(^|[^*\w])\*(?=\S)([^*]+?)\*(?!\w)/g,'$1<em>$2</em>').replace(/(^|[^_\w])_(?=\S)([^_]+?)_(?!\w)/g,'$1<em>$2</em>');
+  return t.replace(/\u0000(\d+)\u0000/g,(_,i)=>g[+i]);
+}
+function cuerpo(t){
+  let o='',par=[],lis=null,cita=[];
+  const fPar=()=>{if(par.length){o+=`<p>${par.map(enLinea).join('<br>')}</p>`;par=[];}};
+  const fCita=()=>{if(cita.length){o+=`<blockquote>${cita.map(enLinea).join('<br>')}</blockquote>`;cita=[];}};
+  const lista=l=>`<${l.tag==='ol'?'ol':'ul'}${l.tag==='tl'?' class="md-tl"':''}${l.tag==='ol'&&l.ini!==1?` start="${l.ini}"`:''}>${l.it.map(i=>`<li${i.ok!=null?` class="${i.ok?'md-ok':'md-no'}"`:''}>${enLinea(i.x)}${i.sub?lista(i.sub):''}</li>`).join('')}</${l.tag==='ol'?'ol':'ul'}>`;
+  const fLis=()=>{if(lis){o+=lista(lis);lis=null;}};
+  const todo=()=>{fPar();fCita();fLis();};
+  (t||'').replace(/\r\n?/g,'\n').split('\n').forEach(raw=>{
+    const s=raw.trim(),ind=(raw.match(/^[ \t]*/)[0]).replace(/\t/g,'  ').length;let m;
+    if(!s){todo();return;}
+    if(/^(-{3,}|\*{3,}|_{3,})$/.test(s)){todo();o+='<hr>';return;}
+    if((m=/^(#{1,3})\s+(.+)$/.exec(s))){todo();o+=`<h${m[1].length+2} class="md-h">${enLinea(m[2])}</h${m[1].length+2}>`;return;}
+    if((m=/^!!\s*(.+)$/.exec(s))){todo();o+=`<div class="md-dest">${enLinea(m[1])}</div>`;return;}
+    if((m=/^>\s?(.*)$/.exec(s))||s.startsWith('"')){fPar();fLis();cita.push(m?m[1]:s);return;}
+    let it=null;
+    if((m=/^(?:[-*•]\s+)?\[( |x|X)\]\s+(.+)$/.exec(s)))it={tag:'tl',x:m[2],ok:m[1]!==' '};
+    else if((m=/^[-*•]\s+(.+)$/.exec(s))||(m=/^·\s*(.+)$/.exec(s)))it={tag:'ul',x:m[1]};
+    else if((m=/^(\d{1,3})[.)]\s+(.+)$/.exec(s)))it={tag:'ol',x:m[2],n:+m[1]};
+    if(it){fPar();fCita();const item={x:it.x,ok:it.ok==null?null:it.ok,sub:null};
+      if(ind>=2&&lis&&lis.it.length){const p=lis.it[lis.it.length-1];if(!p.sub)p.sub={tag:it.tag,ini:it.n||1,it:[]};p.sub.it.push(item);return;}
+      if(lis&&lis.tag!==it.tag)fLis();if(!lis)lis={tag:it.tag,ini:it.n||1,it:[]};lis.it.push(item);return;}
+    if(ind>=2&&lis&&lis.it.length){const p=lis.it[lis.it.length-1];(p.sub&&p.sub.it.length?p.sub.it[p.sub.it.length-1]:p).x+='\n'+s;return;}
+    fCita();fLis();par.push(s);
+  });
+  todo();return o.replace(/\n/g,'<br>');
+}
 
 let filtro='todo', ex=null, division='todas', soloUno=null;
 const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
@@ -428,11 +486,11 @@ function entrada(e){
       <a href="#e-${esc(e.id)}" data-e="${esc(e.id)}" class="l" style="opacity:.5" title="Enlace directo a esta publicación">${esc(e.id)}</a>
     </div>
     <h3>${esc(e.ti)}</h3>
-    <p class="rs">${esc(e.rs)}</p>
+    <p class="rs">${enLinea(e.rs)}</p>
     ${a?(esInc
       ? e.upd.map(u=>`<div class="up">
           <div class="up-f ${FASE[u.e].c}">${FASE[u.e].n}<time>${fc(u.h)}</time></div>
-          <p>${esc(u.x)}</p></div>`).join('')
+          <div class="en-x up-x">${cuerpo(u.x)}</div></div>`).join('')
       : `<div class="en-x">${cuerpo(e.x)}</div>`):''}
     <div class="en-p">
       ${e.comp.length?`<span class="l">Afecta a ${e.comp.map(nc).join(', ')}</span>`:''}
