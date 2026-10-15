@@ -72,5 +72,16 @@
     "comp": [],
     "div": null,
     "ts": "2026-10-07T05:50:19.052Z"
+  },
+  {
+    "id": "005",
+    "t": "novedad",
+    "f": "2026-10-14",
+    "ti": "Nuevo en Coppermind: gafetes con QR y asistencia en segundos",
+    "rs": "Ya pueden generar los gafetes de los alumnos desde la plataforma y tomar la asistencia de entrada escaneando el gafete con el celular.",
+    "x": "Ya pueden generar los gafetes de los alumnos desde la plataforma y tomar la asistencia de entrada escaneando el gafete con el celular.\n\n**Gafetes (Dirección y Control Escolar)\n**\n1. Entra a Registros → Gafetes.\n2. Elige el grupo y los alumnos.\n3. Escoge el diseño: plantilla, color y orientación. Se guarda solo.\n4. Da clic en Vista de impresión y luego en Imprimir o guardar PDF. Sale en hoja carta, a tamaño real de credencial, lista para imprimir por ambos lados.\n5. Al entregarlos, marca Marcar como emitidos.\n\n**El gafete lleva:\n**\n- Al frente: foto, nombre, grupo, matrícula y ciclo.\n- Atrás: contacto de emergencia, tipo de sangre y el código QR.\n- La firma de Dirección va en blanco, para firmarse a mano.\n- Por seguridad, nunca lleva CURP ni domicilio.\n\nSi un alumno pierde su gafete, usa “¿Gafete perdido? Renovar su QR”. El QR anterior deja de funcionar.\n\n**Asistencia con el QR (maestros y Dirección)\n**\n- Opción rápida, para la entrada: en el celular entra a Agenda → Pase de lista → Escanear gafetes y toca Abrir cámara. Pasa los gafetes frente a la cámara uno tras otro. Cada alumno queda registrado solo, con sonido y una palomita junto a su nombre.\n- Opción de un solo alumno: escanea el QR con la cámara normal del celular. Se abre su ficha con un botón grande de Presente o Retardo.\n\n**Importante:\n**\n1. Antes de las 8:10 se registra como Presente; después, como Retardo.\n2. Cada maestro o personal de guardia puede tomar asistencia al ingresar cualquier alumno, independientemente de su grupo.\n3. La asistencia queda en el pase de lista del día, igual que si se tomara a mano.\n4. Si alguien sin acceso escanea un gafete, solo ve que es una credencial vigente de la escuela, sin ningún dato del alumno.",
+    "comp": [],
+    "div": "education",
+    "ts": "2026-10-15T01:54:10.626Z"
   }
 ]
