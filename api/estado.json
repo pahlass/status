@@ -1,8 +1,8 @@
 {
-  "actualizado": "2026-10-26T00:08:50.364Z",
+  "actualizado": "2026-10-26T04:40:03.315Z",
   "global": {
-    "estado": "caido",
-    "uptime90d": "0.000",
+    "estado": "op",
+    "uptime90d": "99.698",
     "medidoPor": "UptimeRobot"
   },
   "incidentesAbiertos": [
