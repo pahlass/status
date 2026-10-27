@@ -27,6 +27,7 @@
      un color inventado — y por eso NO cambia entre tema claro/oscuro,
      es un color de marca fijo, igual que allá. */
   --dv-indigo:#4F46E5; --dv-verdeagua:#4FA6A0; --dv-naranja:#C97C42;
+  --dv-morado:#7C5CC4; --dv-azul:#2F7FD0; --dv-rosa:#C2417E; --dv-ambar:#C99A2E; --dv-gris:#6E737A;
   --ui:'Inter Tight',system-ui,-apple-system,sans-serif;
   --mo:'JetBrains Mono',ui-monospace,monospace;
   --w:1120px;
@@ -416,11 +417,11 @@ const FILTROS=[['todo','Todo'],['estado','Estado'],['novedad','Novedades'],
 
 /* ════════ DIVISIONES (izquierda) ════════ */
 function pintaDivisiones(){
-  const filas=[['todas','Todas',E.length]].concat(DIVS.map(d=>[d.k,d.n,E.filter(e=>e.div===d.k).length]));
+  const filas=[['todas','Todas',E.length,'']].concat(DIVS.map(d=>[d.k,d.n,E.filter(e=>e.div===d.k).length,d.d||'']));
   el('divs').innerHTML=`
     <span class="l dv-t">Divisiones</span>
-    <div class="dv">${filas.map(([k,n,c])=>
-      `<button data-d="${esc(k)}" aria-current="${division===k}"><i style="background:${cd(k)}"></i><span>${esc(n)}</span><span>${c}</span></button>`
+    <div class="dv">${filas.map(([k,n,c,de])=>
+      `<button data-d="${esc(k)}" aria-current="${division===k}"${de?` title="${esc(de)}"`:''}><i style="background:${cd(k)}"></i><span>${esc(n)}</span><span>${c}</span></button>`
     ).join('')}</div>`;
 }
 
