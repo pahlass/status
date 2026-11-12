@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
-  <title>Incidentes — Pahlass</title>
+  <title>Incidentes — Ofhir</title>
   <link>https://status.pahlass.com/</link>
-  <description>Incidentes de estado de Pahlass.</description>
+  <description>Incidentes de estado de Ofhir.</description>
   <item>
     <title>Mantenimiento: roles, accesos y versión móvil</title>
     <link>https://status.pahlass.com/#INC-01</link>

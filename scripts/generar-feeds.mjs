@@ -59,14 +59,14 @@ ${items}
 
 writeFileSync(
   join(raiz, "bitacora.xml"),
-  rss("Bitácora — Pahlass", "Estado, novedades, avances y avisos de Pahlass.", "/", entradas)
+  rss("Bitácora — Ofhir", "Estado, novedades, avances y avisos de Ofhir.", "/", entradas)
 );
 
 writeFileSync(
   join(raiz, "incidentes.xml"),
   rss(
-    "Incidentes — Pahlass",
-    "Incidentes de estado de Pahlass.",
+    "Incidentes — Ofhir",
+    "Incidentes de estado de Ofhir.",
     "/",
     entradas.filter((e) => e.t === "estado")
   )

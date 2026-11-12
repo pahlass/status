@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Estado y novedades — Pahlass</title>
-<meta name="description" content="Estado de los servicios de Pahlass, novedades, avances, avisos y prensa.">
-<link rel="icon" href="logo-pahlass.png">
+<title>Estado y novedades — Ofhir</title>
+<meta name="description" content="Estado de los servicios de Ofhir, novedades, avances, avisos y prensa.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -244,8 +244,8 @@ html[data-theme="light"] .mk img{filter:none}
 
 <div class="hd"><div class="hd-in">
   <button class="mk" data-top>
-    <img src="logo-pahlass.png" alt="Pahlass" width="18" height="22">
-    <b>Pahlass</b><i>Bitácora</i>
+    <img src="logo-ofhir.png" alt="Ofhir" width="66" height="22">
+    <i>Bitácora</i>
   </button>
   <span class="sp"></span>
   <span class="hd-e" id="hdE"></span>
@@ -270,7 +270,7 @@ html[data-theme="light"] .mk img{filter:none}
     <span class="sp"></span>
     <span class="l" id="anio"></span>
   </div>
-  <p><b style="color:var(--tx);font-weight:500">Status Pahlass</b> sigue funcionando aunque la plataforma no responda.</p>
+  <p><b style="color:var(--tx);font-weight:500">Status Ofhir</b> sigue funcionando aunque la plataforma no responda.</p>
 </div></footer>
 
 <div class="sr" id="sr" hidden></div>
@@ -363,10 +363,10 @@ function dur(a,b){const m=Math.round((b-a)/60000);
   return m<60?`${m} min`:`${Math.floor(m/60)} h ${m%60} min`;}
 function gl(){
   if(!GLOBAL || GLOBAL.estado==='pendiente') return {c:'az',t:'Verificando estado…'};
-  if(GLOBAL.estado==='caido') return {c:'mal',t:'Pahlass no responde'};
-  if(GLOBAL.estado==='deg')   return {c:'rie',t:'Pahlass con lentitud'};
+  if(GLOBAL.estado==='caido') return {c:'mal',t:'Ofhir no responde'};
+  if(GLOBAL.estado==='deg')   return {c:'rie',t:'Ofhir con lentitud'};
   if(GLOBAL.estado==='mant')  return {c:'az', t:'Mantenimiento en curso'};
-  return {c:'ok',t:'Pahlass está operativo'};
+  return {c:'ok',t:'Ofhir está operativo'};
 }
 /* Formato del cuerpo (compatible con lo anterior: "·" viñeta y " cita siguen funcionando).
    Bloques: # / ## / ### título · - o · viñeta (2 espacios antes = sub-viñeta) · 1. número
@@ -563,8 +563,8 @@ document.addEventListener('click',ev=>{
   if(t.closest('#sok')){
     const correo=(el('sc')||{}).value||'';
     const wa=(el('st')||{}).value||'';
-    const asunto=encodeURIComponent('Alta en avisos de estado — Pahlass');
-    const cuerpoMail=encodeURIComponent(`Quiero recibir avisos de estado de Pahlass.\n\nCorreo: ${correo}\nWhatsApp: ${wa||'(no proporcionado)'}`);
+    const asunto=encodeURIComponent('Alta en avisos de estado — Ofhir');
+    const cuerpoMail=encodeURIComponent(`Quiero recibir avisos de estado de Ofhir.\n\nCorreo: ${correo}\nWhatsApp: ${wa||'(no proporcionado)'}`);
     window.location.href=`mailto:hola@pahlass.com?subject=${asunto}&body=${cuerpoMail}`;
     el('sf').innerHTML=`<p style="font-size:15px;color:var(--tx2);margin:0">Se abrió tu correo con la solicitud lista para enviar${correo?` a nombre de <b style="color:var(--tx);font-weight:400">${esc(correo)}</b>`:''}. Mándala y quedas dado de alta.</p>
       <button class="bt" data-cerrar style="margin-top:22px">Cerrar</button>`;
@@ -671,7 +671,7 @@ async function cargar(){
   let t='dark';
   try{t=localStorage.getItem('bt.t')||'dark';}catch(_){}
   document.documentElement.setAttribute('data-theme',t);
-  el('anio').textContent=`© ${HOY.getFullYear()} Pahlass`;
+  el('anio').textContent=`© ${HOY.getFullYear()} Ofhir`;
   cargar().then(pinta).then(()=>{
     abrirEnlaceDirecto();
     window.addEventListener('hashchange', abrirEnlaceDirecto);
