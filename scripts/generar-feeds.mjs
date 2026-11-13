@@ -59,7 +59,7 @@ ${items}
 
 writeFileSync(
   join(raiz, "bitacora.xml"),
-  rss("Bitácora — Ofhir", "Estado, novedades, avances y avisos de Ofhir.", "/", entradas)
+  rss("Sala de prensa — Ofhir", "Noticias, anuncios, avances, pensamientos, prensa y estado de Ofhir.", "/", entradas)
 );
 
 writeFileSync(
