@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
-  <title>Sala de prensa — Ofhir</title>
+  <title>Newsroom — Ofhir</title>
   <link>https://status.pahlass.com/</link>
   <description>Noticias, anuncios, avances, pensamientos, prensa y estado de Ofhir.</description>
+  <item>
+    <title>Qué debería hacer un líder de ingeniería, como un vicepresidente o gerente de ingeniería, para ayudar a su equipo a dominar la IA</title>
+    <link>https://status.pahlass.com/#PEN-01</link>
+    <guid isPermaLink="false">PEN-01</guid>
+    <pubDate>Fri, 13 Nov 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[]]></description>
+  </item>
   <item>
     <title>Nuevo en Coppermind: gafetes con QR y asistencia en segundos</title>
     <link>https://status.pahlass.com/#005</link>

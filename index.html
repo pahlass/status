@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sala de prensa — Ofhir</title>
-<meta name="description" content="Sala de prensa de Ofhir: noticias, anuncios, avances, pensamientos, prensa y el estado de la plataforma.">
+<title>Newsroom — Ofhir</title>
+<meta name="description" content="Newsroom de Ofhir: noticias, anuncios, avances, pensamientos, prensa y el estado de la plataforma.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="alternate" type="application/rss+xml" title="Ofhir · Sala de prensa" href="bitacora.xml">
+<link rel="alternate" type="application/rss+xml" title="Ofhir · Newsroom" href="bitacora.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Sala de prensa de Ofhir. Superficie blanca, tipografía grande y ligera,
+/* Newsroom de Ofhir. Superficie blanca, tipografía grande y ligera,
    reglas de 1px, cero radios. El color solo vive en las portadas y en el estado. */
 :root{
   --bg:#FFFFFF; --bg2:#F5F5F4; --tx:#111214; --tx2:#4A4E55; --tx3:#8A8F96;
@@ -238,7 +238,7 @@ html[data-theme="dark"] .pi img{filter:none}
 
 <header class="hd"><div class="w">
   <div class="hd-a">
-    <a class="mk" href="#" aria-label="Ofhir · Sala de prensa"><img src="logo-ofhir.png" alt="Ofhir" width="72" height="24"><span>Sala de prensa</span></a>
+    <a class="mk" href="#" aria-label="Ofhir · Newsroom"><img src="logo-ofhir.png" alt="Ofhir" width="72" height="24"><span>Newsroom</span></a>
     <span class="sp"></span>
     <a class="hd-st" href="#status" id="hdSt"><span class="dot"></span><b>Status</b></a>
     <div class="sq">
@@ -412,7 +412,7 @@ function bandaEstado(){const g=gl(),u=GLOBAL&&GLOBAL.uptime||{};
 /* ════════ VISTAS ════════ */
 function vInicio(){
   const des=E.filter(e=>e.t!=='estado'||e.abierto).slice(0,2),rec=conDiv(E).slice(0,10);
-  return `<div class="w"><section class="hero"><h1>Sala de prensa</h1></section><hr class="regla">
+  return `<div class="w"><section class="hero"><h1>Newsroom</h1></section><hr class="regla">
     ${des.length?`<section style="padding-top:clamp(28px,3vw,44px)"><div class="g2">${des.map((e,i)=>tarjeta(e,{rs:true,marca:i===0&&!e.img})).join('')}</div></section>`:''}
     <section class="sec"><div class="sec-h"><h2>Secciones</h2></div><div class="g2">${SEC.map(tarjetaSec).join('')}</div></section>
     <section class="sec"><div class="sec-h"><h2>Lo más reciente</h2></div>${filtroDiv(E)}
@@ -422,7 +422,7 @@ function vInicio(){
 function vSeccion(s){
   if(s.k==='status')return vStatus();
   const l=conDiv(E.filter(e=>secDe(e)===s));
-  return `<div class="w"><section class="hero"><span class="k">Sala de prensa</span><h1>${esc(s.n)}</h1><p>${esc(s.d)}</p></section><hr class="regla">
+  return `<div class="w"><section class="hero"><span class="k">Newsroom</span><h1>${esc(s.n)}</h1><p>${esc(s.d)}</p></section><hr class="regla">
     <section style="padding-top:clamp(28px,3vw,44px)">${filtroDiv(E.filter(e=>secDe(e)===s))}
       ${l.length?`<div class="g3">${l.map(e=>tarjeta(e,{rs:true})).join('')}</div>`:`<div class="vc">Todavía no hay publicaciones en ${esc(s.n)}.</div>`}</section></div>`;
 }
@@ -450,7 +450,7 @@ function sparkline(r){
 function vStatus(){
   const g=gl(),u=GLOBAL&&GLOBAL.uptime||{},inc=E.filter(e=>e.t==='estado'),ab=inc.filter(e=>e.abierto),r=GLOBAL&&GLOBAL.respuestas;
   const afect=new Set(ab.flatMap(e=>e.comp));
-  return `<div class="w"><section class="hero"><span class="k">Sala de prensa</span><h1>Status</h1><p>${esc(SECK.status.d)}</p></section><hr class="regla">
+  return `<div class="w"><section class="hero"><span class="k">Newsroom</span><h1>Status</h1><p>${esc(SECK.status.d)}</p></section><hr class="regla">
     <section style="padding-top:clamp(36px,4vw,60px)"><div class="st-g">
       <div><h2 class="st-big"><span class="dot ${g.c} vivo"></span>${esc(g.t)}</h2>
         <p class="k" style="margin-top:18px">Última comprobación · <span id="ultimoCheck">${esc(haceVivo(GLOBAL&&GLOBAL.actualizado))}</span>${GLOBAL&&GLOBAL.estado==='op'&&GLOBAL.operativoDesde?` · Operativo desde hace <span id="opDesde">${esc(duracionDesde(GLOBAL.operativoDesde))}</span>`:''}</p>
@@ -470,7 +470,7 @@ function vStatus(){
 function pie(){
   return `<footer class="pi"><div class="w"><div class="pi-g">
     <div><img src="logo-ofhir.png" alt="Ofhir" width="190" height="63"><p>Ingeniería de datos y software para que cada operación tenga el control total de su información.</p></div>
-    <div><h4>Sala de prensa</h4><ul>${SEC.map(s=>`<li><a href="#${s.k}">${esc(s.n)}</a></li>`).join('')}</ul></div>
+    <div><h4>Newsroom</h4><ul>${SEC.map(s=>`<li><a href="#${s.k}">${esc(s.n)}</a></li>`).join('')}</ul></div>
     <div><h4>Divisiones</h4><ul>${DIVS.map(d=>`<li><a href="#" data-div-ir="${esc(d.k)}">${esc(d.n)}</a></li>`).join('')}</ul></div>
     <div><h4>Contacto</h4><ul><li><button type="button" data-sus>Recibir avisos</button></li><li><button type="button" data-rss>Canales RSS</button></li><li><button type="button" data-sop>Soporte</button></li><li><a href="mailto:hola@pahlass.com">hola@pahlass.com</a></li></ul></div>
   </div><div class="pi-b"><span class="k">© ${HOY.getFullYear()} Ofhir</span><span class="k">status.pahlass.com</span></div></div></footer>`;
@@ -490,7 +490,7 @@ function ruta(){
   $('app').innerHTML=html;
   const conBanda=!h;$('pie').innerHTML=pie();$('pie').firstElementChild.style.marginTop=conBanda?'0':'';
   const g=gl();$('hdSt').innerHTML=`<span class="dot ${g.c} vivo"></span><b>Status</b>`;$('hdSt').title=g.t;
-  document.title=(h&&SECK[h]?SECK[h].n+' — ':h&&E.find(x=>x.id===h.replace(/^e-/,''))?E.find(x=>x.id===h.replace(/^e-/,'')).ti+' — ':'Sala de prensa — ')+'Ofhir';
+  document.title=(h&&SECK[h]?SECK[h].n+' — ':h&&E.find(x=>x.id===h.replace(/^e-/,''))?E.find(x=>x.id===h.replace(/^e-/,'')).ti+' — ':'Newsroom — ')+'Ofhir';
   if(ultimaRuta!==h)window.scrollTo(0,0);ultimaRuta=h;
 }
 
@@ -505,7 +505,7 @@ document.addEventListener('click',ev=>{
   const t=ev.target;
   if(t.id==='ov'||t.closest('[data-cerrar]')){if(!t.closest('a'))ev.preventDefault();cierra();return;}
   if(t.closest('[data-tema]')){const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('sp.tema',n);}catch(_){}return;}
-  if(t.closest('[data-buscar]')){abre(cab('Buscar','Buscar en la sala de prensa')+`<label class="cp"><span class="k">Palabra o frase</span><input id="bsQ" type="search" autocomplete="off"></label><div id="bsR"></div>`);
+  if(t.closest('[data-buscar]')){abre(cab('Buscar','Buscar en el Newsroom')+`<label class="cp"><span class="k">Palabra o frase</span><input id="bsQ" type="search" autocomplete="off"></label><div id="bsR"></div>`);
     buscar('');const q=$('bsQ');q.focus();q.addEventListener('input',()=>buscar(q.value));return;}
   const dv=t.closest('[data-div]');if(dv){div=dv.dataset.div;ruta();return;}
   const di=t.closest('[data-div-ir]');if(di){ev.preventDefault();div=di.dataset.divIr;if(location.hash){location.hash='';}else ruta();return;}
@@ -517,7 +517,7 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-sus]'))return abre(cab('Avisos','Te escribimos cuando algo pasa.','Incidentes, mantenimientos y anuncios importantes. Nada comercial.')+
     `<div id="sf"><label class="cp"><span class="k">Correo</span><input id="sc" type="email" autocomplete="email"></label><label class="cp"><span class="k">WhatsApp (opcional)</span><input id="st" type="tel" autocomplete="tel"></label><button type="button" class="btn pr" id="sok">Suscribirme</button></div>`);
   if(t.closest('[data-rss]'))return abre(cab('Canales','Para seguirnos desde otra herramienta.')+
-    `<div class="kv"><span class="k">Sala de prensa</span><span>status.pahlass.com/bitacora.xml</span></div><div class="kv"><span class="k">Incidentes</span><span>status.pahlass.com/incidentes.xml</span></div><div class="kv"><span class="k">Estado</span><span>status.pahlass.com/api/estado.json</span></div>`);
+    `<div class="kv"><span class="k">Newsroom</span><span>status.pahlass.com/bitacora.xml</span></div><div class="kv"><span class="k">Incidentes</span><span>status.pahlass.com/incidentes.xml</span></div><div class="kv"><span class="k">Estado</span><span>status.pahlass.com/api/estado.json</span></div>`);
   if(t.closest('[data-sop]'))return abre(cab('Soporte','Reportar un problema.','Si apareció dentro de la plataforma, en la pantalla de Registro hay un botón para copiar el reporte del error: trae todo lo necesario.')+
     `<div class="kv"><span class="k">Correo</span><span>hola@pahlass.com</span></div><div class="kv"><span class="k">WhatsApp</span><span>+52 667 712 4400</span></div>`);
 });
@@ -538,7 +538,7 @@ async function cargar(){
   cargar().then(()=>{ruta();window.addEventListener('hashchange',ruta);
     setInterval(()=>{const a=$('ultimoCheck');if(a)a.textContent=haceVivo(GLOBAL&&GLOBAL.actualizado);const b=$('opDesde');if(b&&GLOBAL)b.textContent=duracionDesde(GLOBAL.operativoDesde);},1000);
     setInterval(()=>{fetch('data/estado-global.json',{cache:'no-store'}).then(r=>r.json()).then(g=>{GLOBAL=g;const h=location.hash;if(!h||h==='#status'){const y=scrollY;ruta();scrollTo(0,y);}}).catch(()=>{});},60000);
-  }).catch(()=>{$('app').innerHTML='<div class="w"><div class="vc">No se pudo cargar la sala de prensa. Intenta recargar la página.</div></div>';});
+  }).catch(()=>{$('app').innerHTML='<div class="w"><div class="vc">No se pudo cargar el Newsroom. Intenta recargar la página.</div></div>';});
 })();
 </script>
 </body>
